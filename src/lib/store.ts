@@ -1,7 +1,8 @@
 import { INGREDIENTS } from '../data/ingredients';
 
 // Everything the app remembers lives on the phone only (localStorage). A backup is one file the user saves to iCloud.
-export interface Plan { id: string; date: string | null; serves: number } // date YYYY-MM-DD, null = "some day"
+// date YYYY-MM-DD, null = "some day"; meat = meat-eaters to cook the meat-on-the-side for (vegetarian dishes that have one)
+export interface Plan { id: string; date: string | null; serves: number; meat?: number }
 export type Place = 'pantry' | 'fridge' | 'freezer';
 /** Something the kitchen normally has. `out` = run out for now: stays on the list, not counted as there. */
 export interface StockItem { ing: string; place: Place; out?: boolean; name?: string }
@@ -17,10 +18,12 @@ export interface State {
   shopping: { checked: string[] };
   serves: Record<string, number>;
   defaultServes: number;
+  /** How many at the table eat meat: the meat on the side of a vegetarian dish is cooked for them. */
+  meatEaters: number;
 }
 
 const KEY = 'recipes-state-v1';
-export const emptyState = (): State => ({ v: 2, stock: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4 });
+export const emptyState = (): State => ({ v: 2, stock: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4, meatEaters: 2 });
 
 /** Reads a stored or backed-up state, keeping only what it understands. Throws on something that is not ours. */
 export function parseState(text: string): State {
@@ -46,10 +49,12 @@ export function parseState(text: string): State {
     cooked: Array.isArray(raw.cooked) ? raw.cooked.filter((c: any) => c && typeof c.id === 'string' && typeof c.date === 'string') : [],
     plans: Array.isArray(raw.plans)
       ? raw.plans.filter((p: any) => p && typeof p.id === 'string' && (p.date === null || typeof p.date === 'string') && p.serves > 0)
+        .map((p: any): Plan => ({ id: p.id, date: p.date, serves: p.serves, ...(typeof p.meat === 'number' && p.meat >= 0 ? { meat: p.meat } : {}) }))
       : [],
     shopping: { checked: arr(raw.shopping?.checked) },
     serves: raw.serves && typeof raw.serves === 'object' ? Object.fromEntries(Object.entries(raw.serves).filter(([, n]) => typeof n === 'number' && n > 0)) as Record<string, number> : {},
     defaultServes: typeof raw.defaultServes === 'number' && raw.defaultServes > 0 ? raw.defaultServes : base.defaultServes,
+    meatEaters: typeof raw.meatEaters === 'number' && raw.meatEaters >= 0 ? raw.meatEaters : base.meatEaters,
   };
 }
 
@@ -126,6 +131,7 @@ export const allBackIn = () => setState((s) => ({ ...s, stock: s.stock.map(back)
 export const toggleFavourite = (id: string) => setState((s) => ({ ...s, favourites: toggle(s.favourites, id) }));
 export const toggleHidden = (id: string) => setState((s) => ({ ...s, hidden: toggle(s.hidden, id) }));
 export const setServes = (id: string, n: number) => setState((s) => ({ ...s, serves: { ...s.serves, [id]: Math.max(1, Math.min(24, n)) } }));
+export const setMeatEaters = (n: number) => setState((s) => ({ ...s, meatEaters: Math.max(0, Math.min(12, n)) }));
 export const servesFor = (s: State, id: string) => s.serves[id] ?? s.defaultServes;
 export const addPlan = (p: Plan) => setState((s) => ({ ...s, plans: [...s.plans.filter((x) => x.id !== p.id), p] }));
 export const removePlan = (id: string) => setState((s) => ({ ...s, plans: s.plans.filter((x) => x.id !== id) }));

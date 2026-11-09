@@ -86,6 +86,9 @@ input[type=search], input[type=date], select {
 .fold-body { padding: 0 16px 14px; border-top: 1px solid var(--line); }
 .fold-body .btn { margin-top: 12px; }
 .cards:has(.fold) { gap: 8px; }
+.meatline { margin: 4px 0 0; font-size: .88rem; color: var(--accent); }
+.meat-side { margin-top: 8px; }
+.lines.compact .lines-head { font-weight: 700; padding-top: 10px; }
 .swapline { margin: 4px 0 0; font-size: .85rem; color: var(--muted); }
 .empty { padding: 24px 16px; text-align: center; color: var(--muted); background: var(--card); border: 1px dashed var(--line); border-radius: var(--radius); margin: 16px 0; }
 

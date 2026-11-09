@@ -91,6 +91,43 @@ test('add your own ingredient that is not on the list', async ({ page }, info) =
   }
 });
 
+test('vegetarian with meat on the side: filter, recipe, plan, shopping, cooking', async ({ page }, info) => {
+  await page.goto('./#/find');
+  await page.getByRole('tab', { name: 'Free rein' }).click();
+  await page.locator('.chip', { hasText: 'Veg + meat on the side' }).click();
+  const rows = page.locator('.fold');
+  expect(await rows.count()).toBeGreaterThanOrEqual(30);
+  for (const t of await page.locator('.fold .fold-meta').allTextContents()) expect(t).toContain('Veg');
+  await page.locator('.chip', { hasText: /^Vegetarian$/ }).click();
+  expect(await rows.count()).toBeGreaterThan(40);
+  await page.locator('.chip', { hasText: 'Veg + meat on the side' }).click();
+  const row = page.locator('.fold', { hasText: 'Mushroom stroganoff' });
+  await row.getByRole('button', { name: /Show details/ }).click();
+  await expect(row.locator('.meatline')).toContainText('seared beef strips, in its own pan');
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-flex.png' });
+  await row.locator('.fold-main').click();
+  const side = page.locator('.meat-side');
+  await expect(side.locator('.meat-count')).toHaveText('2');
+  await expect(side.locator('.lines')).toContainText('300 g beef steak');
+  await side.getByRole('button', { name: 'More meat-eaters' }).click();
+  await expect(side.locator('.lines')).toContainText('450 g beef steak');
+  await side.getByRole('button', { name: 'Fewer meat-eaters' }).click();
+  await noSideScroll(page);
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-meatside.png', fullPage: true });
+  await page.getByRole('button', { name: 'Plan it' }).click();
+  await expect(page.getByRole('dialog')).toContainText('plus seared beef strips for 2 meat-eaters');
+  await page.getByRole('button', { name: 'Tonight' }).click();
+  await page.goto('./#/saved');
+  await expect(page.locator('.plan-list')).toContainText('meat on the side for 2');
+  await page.locator('.chip', { hasText: 'Shopping' }).click();
+  await expect(page.locator('main, .page').first()).toContainText('300 g beef steak');
+  await page.goto('./#/cook/mushroom-stroganoff');
+  const total = await page.locator('.step-count').textContent();
+  const n = Number(/of (\d+)/.exec(total!)![1]);
+  for (let i = 1; i < n; i++) await page.getByRole('button', { name: 'Next step' }).click();
+  await expect(page.locator('.step-big')).toContainText('Meat on the side (own pan)');
+});
+
 test('something different from spaghetti bolognese', async ({ page }, info) => {
   await page.goto('./#/different');
   await page.locator('.chip', { hasText: 'Spaghetti bolognese' }).click();
@@ -149,9 +186,9 @@ test('free rein filters, surprise, cooking view, hide', async ({ page }, info) =
   await page.goto('./#/r/pasta-norma');
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-recipe.png', fullPage: true });
   await page.getByRole('link', { name: 'Start cooking' }).click();
-  await expect(page.locator('.step-count')).toHaveText('Step 1 of 6');
+  await expect(page.locator('.step-count')).toHaveText('Step 1 of 8');
   await page.getByRole('button', { name: 'Next step' }).click();
-  await expect(page.locator('.step-count')).toHaveText('Step 2 of 6');
+  await expect(page.locator('.step-count')).toHaveText('Step 2 of 8');
   await noSideScroll(page);
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-cook.png' });
   await page.goto('./#/r/pasta-norma');

@@ -38,7 +38,10 @@ export function CookScreen({ id }: { id: string }) {
   const lock = useWakeLock();
   if (!r) return <Empty>That recipe is not in the app any more.</Empty>;
   const f = servesFor(s, r.id) / r.serves;
-  const last = i === r.steps.length - 1;
+  // A vegetarian dish with meat on the side: its own steps come after the dish's, for the planned meat-eaters.
+  const meat = r.meatSide ? (s.plans.find((p) => p.id === r.id)?.meat ?? s.meatEaters) : 0;
+  const steps = [...r.steps, ...(r.meatSide && meat > 0 ? r.meatSide.steps.map((st) => `Meat on the side (own pan): ${st}`) : [])];
+  const last = i >= steps.length - 1;
   return (
     <div class="page cook">
       <div class="cook-head">
@@ -49,10 +52,12 @@ export function CookScreen({ id }: { id: string }) {
       {showIngs && (
         <ul class="lines compact">
           {r.lines.map((l) => <li>{lineText(scaleLine(l, f))}{l.note ? `, ${l.note}` : ''}</li>)}
+          {r.meatSide && meat > 0 && <li class="lines-head">Meat on the side, for {meat}:</li>}
+          {r.meatSide && meat > 0 && r.meatSide.lines.map((l) => <li>{lineText(scaleLine(l, meat))}{l.note ? `, ${l.note}` : ''}</li>)}
         </ul>
       )}
-      <p class="step-count">Step {i + 1} of {r.steps.length}</p>
-      <p class="step-big">{r.steps[i]}</p>
+      <p class="step-count">Step {i + 1} of {steps.length}</p>
+      <p class="step-big">{steps[i]}</p>
       <div class="cook-nav">
         <button class="btn big" disabled={i === 0} onClick={() => setI(i - 1)}>Back</button>
         {last

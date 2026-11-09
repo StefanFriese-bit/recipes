@@ -69,7 +69,7 @@ export function SavedScreen() {
               if (!r) return null;
               return (
                 <li>
-                  <a href={recipeHref(r.id)}><span class="when">{dayLabel(p.date)}</span><strong>{r.title}</strong><span class="small">for {p.serves}</span></a>
+                  <a href={recipeHref(r.id)}><span class="when">{dayLabel(p.date)}</span><strong>{r.title}</strong><span class="small">for {p.serves}{r.meatSide && p.meat ? ` · meat on the side for ${p.meat}` : ''}</span></a>
                   <button class="btn ghost small" onClick={() => removePlan(p.id)} aria-label={`Take ${r.title} off the plan`}>Remove</button>
                 </li>
               );

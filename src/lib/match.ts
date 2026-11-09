@@ -2,13 +2,16 @@ import { FAMILIAR } from '../data/familiar';
 import { INGREDIENTS } from '../data/ingredients';
 import { RECIPES } from '../data/recipes';
 import type { Familiar, Line, Recipe, Swap } from '../types';
+/** veg = vegetarian dishes only; flex = vegetarian dishes that take meat cooked on the side for the meat-eaters. */
+export type Diet = 'veg' | 'flex';
+const fitsDiet = (r: Recipe, d?: Diet) => !d || (r.tags.includes('vegetarian') && (d === 'veg' || !!r.meatSide));
 import { swapsFor } from './lines';
 
 const isStaple = (ing: string) => INGREDIENTS[ing]?.staple ?? false;
 /** The lines you actually have to have: not optional, not salt/pepper/oil/water. */
-export const neededLines = (r: Recipe): Line[] => {
+export const neededLines = (r: Recipe, withMeat = false): Line[] => {
   const seen = new Set<string>();
-  return r.lines.filter((l) => !l.optional && !isStaple(l.ing) && !seen.has(l.ing) && (seen.add(l.ing), true));
+  return [...r.lines, ...(withMeat && r.meatSide ? r.meatSide.lines : [])].filter((l) => !l.optional && !isStaple(l.ing) && !seen.has(l.ing) && (seen.add(l.ing), true));
 };
 
 export interface FridgeMatch {
@@ -19,12 +22,12 @@ export interface FridgeMatch {
 }
 
 /** What a recipe needs that you have, can swap from what you have, or would have to buy. */
-export function analyse(recipe: Recipe, got: Set<string>): Omit<FridgeMatch, 'recipe'> {
+export function analyse(recipe: Recipe, got: Set<string>, withMeat = false): Omit<FridgeMatch, 'recipe'> {
   const ok = (ing: string) => got.has(ing) || isStaple(ing);
   const used: string[] = [];
   const covered: FridgeMatch['covered'] = [];
   const missing: Line[] = [];
-  for (const line of neededLines(recipe)) {
+  for (const line of neededLines(recipe, withMeat)) {
     if (got.has(line.ing)) { used.push(line.ing); continue; }
     const swap = swapsFor(line.ing).find((s) => !s.limited && s.parts.every((p) => ok(p.ing)));
     if (swap) covered.push({ line, swap });
@@ -34,14 +37,14 @@ export function analyse(recipe: Recipe, got: Set<string>): Omit<FridgeMatch, 're
 }
 
 /** Recipes you can (nearly) make from what you have. Sorted: fewest missing, then most of your things used. */
-export function fridgeMatches(have: Iterable<string>, hidden: Iterable<string> = [], maxMissing = 3): FridgeMatch[] {
+export function fridgeMatches(have: Iterable<string>, hidden: Iterable<string> = [], maxMissing = 3, diet?: Diet): FridgeMatch[] {
   const got = new Set(have);
   const hide = new Set(hidden);
   if (got.size === 0) return [];
   const out: FridgeMatch[] = [];
   for (const recipe of RECIPES) {
-    if (hide.has(recipe.id)) continue;
-    const a = analyse(recipe, got);
+    if (hide.has(recipe.id) || !fitsDiet(recipe, diet)) continue;
+    const a = analyse(recipe, got, diet === 'flex');
     if (a.used.length === 0 || a.missing.length > maxMissing) continue;
     out.push({ recipe, ...a });
   }
@@ -52,7 +55,7 @@ export function fridgeMatches(have: Iterable<string>, hidden: Iterable<string> =
 /** Free rein: every recipe that fits the filters, whatever is in stock, each with what you would have to buy. */
 export function freeRein(f: Filters, have: Iterable<string>, hidden: Iterable<string> = []): FridgeMatch[] {
   const got = new Set(have);
-  return discover(f, hidden).map((recipe) => ({ recipe, ...analyse(recipe, got) }));
+  return discover(f, hidden).map((recipe) => ({ recipe, ...analyse(recipe, got, dietOf(f) === 'flex') }));
 }
 
 const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -120,7 +123,9 @@ export function somethingDifferent(text: string, hidden: Iterable<string> = []):
   return { familiar, results };
 }
 
-export interface Filters { cuisine?: string; maxMinutes?: number; effort?: 1 | 3; course?: string; vegetarian?: boolean; text?: string }
+/** `vegetarian: true` is how the first version stored "Vegetarian"; it reads as diet 'veg'. */
+export interface Filters { cuisine?: string; maxMinutes?: number; effort?: 1 | 3; course?: string; diet?: Diet; vegetarian?: boolean; text?: string }
+export const dietOf = (f: Filters): Diet | undefined => f.diet ?? (f.vegetarian ? 'veg' : undefined);
 
 export function discover(f: Filters, hidden: Iterable<string> = []): Recipe[] {
   const hide = new Set(hidden);
@@ -130,7 +135,7 @@ export function discover(f: Filters, hidden: Iterable<string> = []): Recipe[] {
     && (!f.maxMinutes || r.minutes <= f.maxMinutes)
     && (!f.effort || (f.effort === 1 ? r.effort === 1 : r.effort === 3))
     && (!f.course || r.course === f.course)
-    && (!f.vegetarian || r.tags.includes('vegetarian'))
+    && fitsDiet(r, dietOf(f))
     && (!t || norm(`${r.title} ${r.cuisine} ${r.blurb} ${r.lines.map((l) => INGREDIENTS[l.ing].name).join(' ')}`).includes(t)));
 }
 

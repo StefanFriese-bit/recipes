@@ -3,7 +3,7 @@
 A personal recipe app for the phone: new dishes to try, not the ones you already know.
 
 - **Stock** – what you normally keep in the pantry, fridge and freezer; tap an item when it runs out (it stays on the list), "all in" after shopping. Something not on the ingredient list can be added as your own (it stays on the list; recipes do not use it).
-- **Cook** – *From my stock*: recipes needing nothing beyond your stock (or up to 3 things to buy), with swaps worked out. *Free rein*: every recipe by time, effort, course and cuisine, each showing what you'd need to buy; or Surprise me.
+- **Cook** – *From my stock*: recipes needing nothing beyond your stock (or up to 3 things to buy), with swaps worked out. *Free rein*: every recipe by time, effort, course and cuisine, each showing what you'd need to buy; or Surprise me. Filters: Everything, Vegetarian, or Veg + meat on the side (vegetarian dishes with meat or fish cooked in its own pan for the meat-eaters; 2 to start, changeable per recipe, carried into the plan, shopping list and cooking steps).
 - **Something different** – type a dish you always make; get new dishes built on the same kind of ingredients.
 - **Recipe** – change the number of people and every amount follows; tap Swap on an ingredient for a stand-in with its amount; a step-by-step cooking view keeps the screen on.
 - **Saved** – favourites, a meal plan, a shopping list built from the plan, what you cooked, and a backup file.

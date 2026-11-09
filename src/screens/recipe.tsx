@@ -4,7 +4,7 @@ import { recipeById } from '../data/recipes';
 import { lineText, swapText, swapsFor } from '../lib/lines';
 import { scaleLine } from '../lib/units';
 import {
-  addDays, addPlan, inStock, markCooked, removePlan, servesFor, setServes, today, toggleFavourite, toggleHidden,
+  addDays, addPlan, inStock, markCooked, removePlan, servesFor, setMeatEaters, setServes, today, toggleFavourite, toggleHidden,
 } from '../lib/store';
 import type { Line } from '../types';
 import { Empty, Meta, Sheet, go, useStore } from '../ui';
@@ -37,7 +37,8 @@ export function RecipeScreen({ id }: { id: string }) {
   const plan = s.plans.find((p) => p.id === r.id);
   const got = new Set(inStock(s));
   const cookedTimes = s.cooked.filter((c) => c.id === r.id).length;
-  const doPlan = (date: string | null) => { addPlan({ id: r.id, date, serves }); setPlanning(false); };
+  const meat = r.meatSide ? s.meatEaters : 0;
+  const doPlan = (date: string | null) => { addPlan({ id: r.id, date, serves, ...(r.meatSide ? { meat } : {}) }); setPlanning(false); };
 
   return (
     <div class="page recipe">
@@ -81,6 +82,38 @@ export function RecipeScreen({ id }: { id: string }) {
         })}
       </ul>
 
+      {r.meatSide && (
+        <section class="meat-side">
+          <h2>Meat on the side</h2>
+          <p class="small">The dish stays vegetarian. For the meat-eaters: {r.meatSide.name.toLowerCase()}, cooked in its own pan and added on their plates.</p>
+          <div class="serves">
+            <span>For</span>
+            <button class="btn round" aria-label="Fewer meat-eaters" onClick={() => setMeatEaters(meat - 1)}>−</button>
+            <strong class="meat-count">{meat}</strong>
+            <button class="btn round" aria-label="More meat-eaters" onClick={() => setMeatEaters(meat + 1)}>+</button>
+            <span>{meat === 1 ? 'meat-eater' : 'meat-eaters'}</span>
+          </div>
+          {meat === 0
+            ? <p class="small">Nobody wants meat this time: it is left off the shopping list and the cooking steps.</p>
+            : (
+              <>
+                <ul class="lines">
+                  {r.meatSide.lines.map((l) => (
+                    <li class={got.has(l.ing) ? 'have' : ''}>
+                      <div>
+                        <span class="line-text">{lineText(scaleLine(l, meat))}</span>
+                        {l.note && <span class="note">, {l.note}</span>}
+                        {got.has(l.ing) && <span class="tag have-tag">in stock</span>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <ol class="steps">{r.meatSide.steps.map((st) => <li>{st}</li>)}</ol>
+              </>
+            )}
+        </section>
+      )}
+
       <h2>Method</h2>
       <ol class="steps">{r.steps.map((st) => <li>{st}</li>)}</ol>
       {r.tip && <p class="tip"><strong>Tip:</strong> {r.tip}</p>}
@@ -123,7 +156,7 @@ export function RecipeScreen({ id }: { id: string }) {
             <input type="date" value={pick} min={today()} onInput={(e) => setPick((e.target as HTMLInputElement).value)} />
           </label>
           <button class="btn primary" disabled={!pick} onClick={() => doPlan(pick)}>Plan for this date</button>
-          <p class="small">It goes on your shopping list for {serves} {serves === 1 ? 'person' : 'people'}.</p>
+          <p class="small">It goes on your shopping list for {serves} {serves === 1 ? 'person' : 'people'}{r.meatSide && meat > 0 ? `, plus ${r.meatSide.name.toLowerCase()} for ${meat} ${meat === 1 ? 'meat-eater' : 'meat-eaters'}` : ''}.</p>
           {plan && <button class="btn ghost danger" onClick={() => { removePlan(r.id); setPlanning(false); }}>Take it off the plan</button>}
         </Sheet>
       )}

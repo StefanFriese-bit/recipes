@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'preact/hooks';
 import { INGREDIENTS } from '../data/ingredients';
 import { lineText, swapText } from '../lib/lines';
-import { CUISINES, freeRein, fridgeMatches, surprise, type FridgeMatch, type Filters } from '../lib/match';
+import { CUISINES, dietOf, freeRein, fridgeMatches, surprise, type Diet, type FridgeMatch, type Filters } from '../lib/match';
 import { inStock } from '../lib/store';
 import { EFFORT, Empty, go, minutes, recipeHref, useStore } from '../ui';
 
@@ -13,6 +13,17 @@ const COURSES: [string, string][] = [['', 'Any course'], ['main', 'Mains'], ['so
  * One recipe as a folded row: name, then "cuisine · time · effort · Veg" with what there is to buy beside it.
  * The name opens the recipe; the arrow on the right folds the details (description, what it uses, swaps) open.
  */
+/** Everyone / vegetarian / vegetarian with meat cooked on the side for the meat-eaters. */
+function DietChips({ diet, set }: { diet?: Diet; set: (d?: Diet) => void }) {
+  return (
+    <div class="chips">
+      {([[undefined, 'Everything'], ['veg', 'Vegetarian'], ['flex', 'Veg + meat on the side']] as const).map(([v, label]) => (
+        <button class={`chip ${diet === v ? 'on' : ''}`} onClick={() => set(v)}>{label}</button>
+      ))}
+    </div>
+  );
+}
+
 function MatchCard({ m }: { m: FridgeMatch }) {
   const s = useStore();
   const [open, setOpen] = useState(false);
@@ -39,6 +50,7 @@ function MatchCard({ m }: { m: FridgeMatch }) {
           {m.used.length > 0 && <p class="uses">Uses your {m.used.map((u) => INGREDIENTS[u].name).join(', ')}</p>}
           {buy > 0 && <p class="missing">Buy: {m.missing.map((l) => INGREDIENTS[l.ing].name).join(', ')}</p>}
           {m.covered.map((c) => <p class="swapline">No {INGREDIENTS[c.line.ing].name}? Use {swapText(c.line, c.swap)} (for {lineText(c.line)})</p>)}
+          {r.meatSide && <p class="meatline">Meat on the side: {r.meatSide.name.toLowerCase()}, in its own pan</p>}
           <a class="btn primary wide" href={recipeHref(r.id)}>Open the recipe</a>
         </div>
       )}
@@ -54,7 +66,9 @@ export function FindScreen({ start }: { start?: Mode }) {
   const [f, setF] = useState<Filters>(() => { try { return JSON.parse(keep('disc-f') || '{}'); } catch { return {}; } });
   const upd = (x: Partial<Filters>) => { const n = { ...f, ...x }; setF(n); keep('disc-f', JSON.stringify(n)); };
   const have = inStock(s);
-  const fromStock = useMemo(() => fridgeMatches(have, s.hidden, allowBuy ? 3 : 0), [s.stock, s.hidden, allowBuy]);
+  const diet = dietOf(f);
+  const setDiet = (d?: Diet) => upd({ diet: d, vegetarian: undefined });
+  const fromStock = useMemo(() => fridgeMatches(have, s.hidden, allowBuy ? 3 : 0, diet), [s.stock, s.hidden, allowBuy, diet]);
   const free = useMemo(() => (mode === 'free' ? freeRein(f, have, s.hidden) : []), [mode, f, s.stock, s.hidden]);
 
   return (
@@ -76,6 +90,7 @@ export function FindScreen({ start }: { start?: Mode }) {
                   <button class={`chip ${!allowBuy ? 'on' : ''}`} onClick={() => setAllowBuy(false)}>Nothing to buy</button>
                   <button class={`chip ${allowBuy ? 'on' : ''}`} onClick={() => setAllowBuy(true)}>Up to 3 things to buy</button>
                 </div>
+                <DietChips diet={diet} set={setDiet} />
                 {fromStock.length === 0
                   ? <Empty>{allowBuy ? 'Nothing fits yet. Add more to your stock.' : 'Nothing can be made from stock alone. Try "Up to 3 things to buy".'}</Empty>
                   : <p class="small">{fromStock.length} {fromStock.length === 1 ? 'recipe' : 'recipes'}.</p>}
@@ -101,8 +116,8 @@ export function FindScreen({ start }: { start?: Mode }) {
             {([[undefined, 'Any effort'], [1, 'Easy'], [3, 'Weekend project']] as const).map(([v, label]) => (
               <button class={`chip ${f.effort === v ? 'on' : ''}`} onClick={() => upd({ effort: v })}>{label}</button>
             ))}
-            <button class={`chip ${f.vegetarian ? 'on' : ''}`} onClick={() => upd({ vegetarian: !f.vegetarian })}>Vegetarian</button>
           </div>
+          <DietChips diet={diet} set={setDiet} />
           <div class="selects">
             <select value={f.course ?? ''} onChange={(e) => upd({ course: (e.target as HTMLSelectElement).value || undefined })} aria-label="Course">
               {COURSES.map(([v, l]) => <option value={v}>{l}</option>)}

@@ -19,7 +19,9 @@ export function shoppingList(plans: Plan[], stock: string[]): ShopItem[] {
     const r = recipeById(p.id);
     if (!r) continue;
     const f = p.serves / r.serves;
-    for (const l of r.lines) {
+    // The main dish for everyone, plus the meat on the side for the meat-eaters (its amounts are per person).
+    const lines = [...r.lines.map((l) => ({ l, f })), ...(r.meatSide && p.meat ? r.meatSide.lines.map((l) => ({ l, f: p.meat! })) : [])];
+    for (const { l, f } of lines) {
       const i = INGREDIENTS[l.ing];
       if (!i || i.staple || l.optional) continue;
       const fam = l.unit === 'taste' ? 'taste' : family(l.unit);

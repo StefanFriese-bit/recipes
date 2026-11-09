@@ -39,7 +39,12 @@ export interface Recipe {
   lines: Line[];
   steps: string[];
   tip?: string;
+  /** Vegetarian dish only: meat or fish cooked in its own pan for the meat-eaters (src/data/meat-sides.ts). */
+  meatSide?: MeatSide;
 }
+
+/** Amounts are for ONE meat-eater. */
+export interface MeatSide { name: string; lines: Line[]; steps: string[] }
 
 export interface SwapPart {
   ing: string;
