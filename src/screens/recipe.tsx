@@ -1,0 +1,132 @@
+import { useState } from 'preact/hooks';
+import { INGREDIENTS } from '../data/ingredients';
+import { recipeById } from '../data/recipes';
+import { lineText, swapText, swapsFor } from '../lib/lines';
+import { scaleLine } from '../lib/units';
+import {
+  addDays, addPlan, markCooked, removePlan, servesFor, setServes, today, toggleFavourite, toggleHidden,
+} from '../lib/store';
+import type { Line } from '../types';
+import { Empty, Meta, Sheet, go, useStore } from '../ui';
+
+function nextDay(weekday: number): string {
+  const d = new Date();
+  const add = (weekday - d.getDay() + 7) % 7 || 7;
+  return addDays(today(d), add);
+}
+export function dayLabel(iso: string | null): string {
+  if (!iso) return 'Some day';
+  const t = today();
+  if (iso === t) return 'Tonight';
+  if (iso === addDays(t, 1)) return 'Tomorrow';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+export function RecipeScreen({ id }: { id: string }) {
+  const s = useStore();
+  const r = recipeById(id);
+  const [swapLine, setSwapLine] = useState<Line | null>(null);
+  const [planning, setPlanning] = useState(false);
+  const [pick, setPick] = useState('');
+  if (!r) return <Empty>That recipe is not in the app any more. <a href="#/discover">Find another</a></Empty>;
+  const serves = servesFor(s, r.id);
+  const f = serves / r.serves;
+  const fav = s.favourites.includes(r.id);
+  const hidden = s.hidden.includes(r.id);
+  const plan = s.plans.find((p) => p.id === r.id);
+  const got = new Set(s.fridge);
+  const cookedTimes = s.cooked.filter((c) => c.id === r.id).length;
+  const doPlan = (date: string | null) => { addPlan({ id: r.id, date, serves }); setPlanning(false); };
+
+  return (
+    <div class="page recipe">
+      <button class="btn ghost back" onClick={() => (history.length > 1 ? history.back() : go('#/discover'))}>‹ Back</button>
+      <h1>{r.title}</h1>
+      <Meta r={r} />
+      <p class="lead">{r.blurb}</p>
+
+      <div class="actions">
+        <button class={`btn ${fav ? 'on' : ''}`} onClick={() => toggleFavourite(r.id)}>{fav ? '★ Saved' : '☆ Save'}</button>
+        <button class={`btn ${plan ? 'on' : ''}`} onClick={() => setPlanning(true)}>{plan ? `Planned: ${dayLabel(plan.date)}` : 'Plan it'}</button>
+        <button class={`btn ${hidden ? 'on' : ''}`} onClick={() => toggleHidden(r.id)}>{hidden ? 'Hidden — show again' : 'I know this one'}</button>
+      </div>
+      {cookedTimes > 0 && <p class="small">You have cooked this {cookedTimes === 1 ? 'once' : `${cookedTimes} times`}.</p>}
+
+      <div class="serves">
+        <span>For</span>
+        <button class="btn round" aria-label="Fewer people" onClick={() => setServes(r.id, serves - 1)}>−</button>
+        <strong>{serves}</strong>
+        <button class="btn round" aria-label="More people" onClick={() => setServes(r.id, serves + 1)}>+</button>
+        <span>{serves === 1 ? 'person' : 'people'}</span>
+      </div>
+
+      <h2>Ingredients</h2>
+      <ul class="lines">
+        {r.lines.map((l) => {
+          const sl = scaleLine(l, f);
+          const swaps = swapsFor(l.ing);
+          const staple = INGREDIENTS[l.ing].staple;
+          return (
+            <li class={got.has(l.ing) ? 'have' : ''}>
+              <div>
+                <span class="line-text">{lineText(sl)}</span>
+                {l.note && <span class="note">, {l.note}</span>}
+                {l.optional && <span class="tag">optional</span>}
+                {got.has(l.ing) && <span class="tag have-tag">in your fridge</span>}
+              </div>
+              {swaps.length > 0 && !staple && <button class="btn small" onClick={() => setSwapLine(sl)}>Swap</button>}
+            </li>
+          );
+        })}
+      </ul>
+
+      <h2>Method</h2>
+      <ol class="steps">{r.steps.map((st) => <li>{st}</li>)}</ol>
+      {r.tip && <p class="tip"><strong>Tip:</strong> {r.tip}</p>}
+      {f !== 1 && <p class="small">Amounts are worked out for {serves}. Cooking times stay about the same; a much bigger batch may need a bigger pan or a little longer.</p>}
+
+      <div class="bottom-actions">
+        <a class="btn primary big" href={`#/cook/${encodeURIComponent(r.id)}`}>Start cooking</a>
+        <button class="btn big" onClick={() => markCooked(r.id, today())}>I cooked this</button>
+      </div>
+
+      {swapLine && (
+        <Sheet title={`No ${INGREDIENTS[swapLine.ing].name}?`} onClose={() => setSwapLine(null)}>
+          <p class="small">Instead of {lineText(swapLine)}{swapLine.note ? ` (${swapLine.note})` : ''}:</p>
+          <ul class="swaps">
+            {swapsFor(swapLine.ing).map((sw) => {
+              const haveAll = sw.parts.every((p) => got.has(p.ing) || INGREDIENTS[p.ing].staple);
+              return (
+                <li>
+                  <strong>{swapText(swapLine, sw)}</strong>
+                  {haveAll && got.size > 0 && <span class="tag have-tag">you have this</span>}
+                  <p>{sw.note}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </Sheet>
+      )}
+
+      {planning && (
+        <Sheet title="When will you cook it?" onClose={() => setPlanning(false)}>
+          <div class="grid2">
+            <button class="btn" onClick={() => doPlan(today())}>Tonight</button>
+            <button class="btn" onClick={() => doPlan(addDays(today(), 1))}>Tomorrow</button>
+            <button class="btn" onClick={() => doPlan(nextDay(6))}>Saturday</button>
+            <button class="btn" onClick={() => doPlan(nextDay(0))}>Sunday</button>
+            <button class="btn" onClick={() => doPlan(null)}>Some day</button>
+          </div>
+          <label class="field">
+            <span>Or pick a date</span>
+            <input type="date" value={pick} min={today()} onInput={(e) => setPick((e.target as HTMLInputElement).value)} />
+          </label>
+          <button class="btn primary" disabled={!pick} onClick={() => doPlan(pick)}>Plan for this date</button>
+          <p class="small">It goes on your shopping list for {serves} {serves === 1 ? 'person' : 'people'}.</p>
+          {plan && <button class="btn ghost danger" onClick={() => { removePlan(r.id); setPlanning(false); }}>Take it off the plan</button>}
+        </Sheet>
+      )}
+    </div>
+  );
+}
