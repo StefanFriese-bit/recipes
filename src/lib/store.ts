@@ -4,7 +4,9 @@ import { INGREDIENTS } from '../data/ingredients';
 export interface Plan { id: string; date: string | null; serves: number } // date YYYY-MM-DD, null = "some day"
 export type Place = 'pantry' | 'fridge' | 'freezer';
 /** Something the kitchen normally has. `out` = run out for now: stays on the list, not counted as there. */
-export interface StockItem { ing: string; place: Place; out?: boolean }
+export interface StockItem { ing: string; place: Place; out?: boolean; name?: string }
+/** Something typed in that is not on the ingredient list. Its id starts with "own:"; recipes never use it. */
+export const isOwn = (ing: string) => ing.startsWith('own:');
 export interface State {
   v: 2;
   stock: StockItem[];
@@ -32,8 +34,13 @@ export function parseState(text: string): State {
     stock: raw.v === 1
       ? arr(raw.fridge).map((ing) => ({ ing, place: defaultPlace(ing) }))
       : (Array.isArray(raw.stock) ? raw.stock : [])
-        .filter((x: any) => x && typeof x.ing === 'string' && PLACES.includes(x.place))
-        .map((x: any) => (x.out ? { ing: x.ing, place: x.place, out: true } : { ing: x.ing, place: x.place })),
+        .filter((x: any) => x && typeof x.ing === 'string' && PLACES.includes(x.place)
+          && (!isOwn(x.ing) || (typeof x.name === 'string' && x.name.trim() !== '')))
+        .map((x: any): StockItem => ({
+          ing: x.ing, place: x.place,
+          ...(x.out ? { out: true } : {}),
+          ...(isOwn(x.ing) ? { name: String(x.name).trim().slice(0, 60) } : {}),
+        })),
     favourites: arr(raw.favourites),
     hidden: arr(raw.hidden),
     cooked: Array.isArray(raw.cooked) ? raw.cooked.filter((c: any) => c && typeof c.id === 'string' && typeof c.date === 'string') : [],
@@ -78,18 +85,44 @@ export function setState(change: (s: State) => State) {
 export function subscribe(l: () => void) { listeners.add(l); return () => { listeners.delete(l); }; }
 export function replaceState(s: State) { setState(() => s); }
 
+const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+/** The ingredient a typed name means, if the list has it ("Leeks", "leek", "Crème fraîche"). */
+export function knownIngredient(typed: string): string | undefined {
+  const t = norm(typed);
+  if (!t) return undefined;
+  const forms = new Set([t, t.replace(/es$/, ''), t.replace(/s$/, '')]);
+  return Object.values(INGREDIENTS).find((i) => forms.has(norm(i.name)) || forms.has(norm(i.plural)))?.id;
+}
+/** The name to show for a stock item. */
+export const stockName = (x: StockItem) => INGREDIENTS[x.ing]?.name ?? x.name ?? x.ing;
+/** Back in stock: the same item without the "run out" mark. */
+const back = (x: StockItem): StockItem => (x.name ? { ing: x.ing, place: x.place, name: x.name } : { ing: x.ing, place: x.place });
+/**
+ * Adds something typed in. If the list knows it, the real ingredient goes on (so recipes count it);
+ * otherwise it goes on as your own item. Returns the id that is now on the list.
+ */
+export function addOwnStock(typed: string, place: Place): string | undefined {
+  const name = typed.trim().replace(/\s+/g, ' ').slice(0, 60);
+  if (!name) return undefined;
+  const known = knownIngredient(name);
+  if (known) { addStock(known, place); moveStock(known, place); return known; }
+  const ing = `own:${norm(name)}`;
+  setState((s) => (onList(s, ing) ? { ...s, stock: s.stock.map((x) => (x.ing === ing ? { ...back(x), place } : x)) } : { ...s, stock: [...s.stock, { ing, place, name }] }));
+  return ing;
+}
+
 const toggle = (list: string[], id: string) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 /** Ingredient ids that are in the kitchen right now (on the stock list and not marked out). */
 export const inStock = (s: State): string[] => s.stock.filter((x) => !x.out).map((x) => x.ing);
 export const onList = (s: State, ing: string) => s.stock.some((x) => x.ing === ing);
 export const addStock = (ing: string, place: Place = defaultPlace(ing)) =>
-  setState((s) => (onList(s, ing) ? { ...s, stock: s.stock.map((x) => (x.ing === ing ? { ing, place: x.place } : x)) } : { ...s, stock: [...s.stock, { ing, place }] }));
+  setState((s) => (onList(s, ing) ? { ...s, stock: s.stock.map((x) => (x.ing === ing ? back(x) : x)) } : { ...s, stock: [...s.stock, { ing, place }] }));
 export const addManyStock = (ings: string[]) =>
   setState((s) => ({ ...s, stock: [...s.stock, ...ings.filter((i) => !onList(s, i)).map((ing) => ({ ing, place: defaultPlace(ing) }))] }));
 export const removeStock = (ing: string) => setState((s) => ({ ...s, stock: s.stock.filter((x) => x.ing !== ing) }));
-export const toggleOut = (ing: string) => setState((s) => ({ ...s, stock: s.stock.map((x) => (x.ing === ing ? (x.out ? { ing, place: x.place } : { ...x, out: true }) : x)) }));
+export const toggleOut = (ing: string) => setState((s) => ({ ...s, stock: s.stock.map((x) => (x.ing === ing ? (x.out ? back(x) : { ...x, out: true }) : x)) }));
 export const moveStock = (ing: string, place: Place) => setState((s) => ({ ...s, stock: s.stock.map((x) => (x.ing === ing ? { ...x, place } : x)) }));
-export const allBackIn = () => setState((s) => ({ ...s, stock: s.stock.map((x) => ({ ing: x.ing, place: x.place })) }));
+export const allBackIn = () => setState((s) => ({ ...s, stock: s.stock.map(back) }));
 export const toggleFavourite = (id: string) => setState((s) => ({ ...s, favourites: toggle(s.favourites, id) }));
 export const toggleHidden = (id: string) => setState((s) => ({ ...s, hidden: toggle(s.hidden, id) }));
 export const setServes = (id: string, n: number) => setState((s) => ({ ...s, serves: { ...s.serves, [id]: Math.max(1, Math.min(24, n)) } }));

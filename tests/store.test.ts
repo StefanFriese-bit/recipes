@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { shoppingList } from '../src/lib/shopping';
-import { addDays, emptyState, inStock, parseState } from '../src/lib/store';
+import { addDays, addOwnStock, allBackIn, emptyState, getState, inStock, knownIngredient, parseState, replaceState, toggleOut } from '../src/lib/store';
 
 describe('backup file', () => {
   it('round-trips and drops what it does not understand', () => {
@@ -55,5 +55,27 @@ describe('stock list', () => {
     const s = parseState(JSON.stringify({ ...emptyState(), stock: [{ ing: 'eggs', place: 'fridge', out: true }, { ing: 'milk', place: 'fridge' }, { ing: 'x', place: 'garage' }] }));
     expect(s.stock.length).toBe(2);
     expect(inStock(s)).toEqual(['milk']);
+  });
+  it('a typed name the list knows goes on as the real ingredient, so recipes count it', () => {
+    expect(knownIngredient('Leeks')).toBe('leek');
+    expect(knownIngredient('  leek ')).toBe('leek');
+    expect(knownIngredient('dragon fruit')).toBeUndefined();
+    replaceState(emptyState());
+    expect(addOwnStock('Leeks', 'fridge')).toBe('leek');
+    expect(getState().stock).toEqual([{ ing: 'leek', place: 'fridge' }]);
+  });
+  it('your own item keeps its name through run out, back in and a backup', () => {
+    replaceState(emptyState());
+    const id = addOwnStock('  Dragon   fruit ', 'pantry')!;
+    expect(id).toBe('own:dragon fruit');
+    expect(getState().stock).toEqual([{ ing: id, place: 'pantry', name: 'Dragon fruit' }]);
+    addOwnStock('dragon fruit', 'fridge'); // same thing again: moved, not doubled
+    expect(getState().stock).toEqual([{ ing: id, place: 'fridge', name: 'Dragon fruit' }]);
+    toggleOut(id); toggleOut(id); toggleOut(id); allBackIn();
+    expect(getState().stock).toEqual([{ ing: id, place: 'fridge', name: 'Dragon fruit' }]);
+    const back = parseState(JSON.stringify(getState()));
+    expect(back.stock).toEqual([{ ing: id, place: 'fridge', name: 'Dragon fruit' }]);
+    // an own item with no name in a file is dropped, not shown as a blank line
+    expect(parseState(JSON.stringify({ ...emptyState(), stock: [{ ing: 'own:x', place: 'pantry' }] })).stock).toEqual([]);
   });
 });

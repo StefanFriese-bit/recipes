@@ -86,6 +86,9 @@ input[type=search], input[type=date], select {
 .note { color: var(--muted); }
 .tag { display: inline-block; margin-left: 6px; font-size: .75rem; padding: 1px 7px; border-radius: 999px; background: var(--soft); color: var(--muted); vertical-align: 1px; }
 .have-tag { background: var(--good-soft); color: var(--good); }
+.own-tag { background: var(--soft); color: var(--accent, var(--muted)); }
+.own-add { margin: 4px 0 8px; }
+.own-add .small { margin: 6px 0 2px; }
 .steps { padding-left: 1.3em; }
 .steps li { margin: 0 0 12px; padding-left: 4px; }
 .tip { background: var(--soft); padding: 12px 14px; border-radius: var(--radius); }

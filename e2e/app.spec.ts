@@ -48,6 +48,37 @@ test('stock list: basics, add, run out, back in -> cook from stock -> recipe -> 
   await expect(page.locator('.serves strong')).toHaveText('5');
 });
 
+test('add your own ingredient that is not on the list', async ({ page }, info) => {
+  await page.goto('./#/stock');
+  const box = page.getByPlaceholder('Add an ingredient');
+  await box.fill('Biltong');
+  await expect(page.getByText('Not on our list. Add "Biltong" as your own to:')).toBeVisible();
+  await page.locator('.own-add .chip', { hasText: 'Pantry & cupboard' }).click();
+  await expect(box).toHaveValue('');
+  const row = page.locator('.stock li', { hasText: 'Biltong' });
+  await expect(row).toContainText('own');
+  await expect(page.getByText('1 in stock.')).toBeVisible();
+  // a word the list knows goes on as the real thing, with no "own" offer
+  await box.fill('leeks');
+  await expect(page.locator('.own-add')).toHaveCount(0);
+  await page.locator('.chips .chip', { hasText: /^\+ Leek/ }).first().click();
+  await expect(page.locator('.stock li', { hasText: 'Leek' })).not.toContainText('own');
+  // run out and back, move it, still there after a reload
+  await row.locator('.stock-name').click();
+  await expect(row).toContainText('run out');
+  await row.getByRole('button', { name: 'Change Biltong' }).click();
+  await expect(page.getByRole('dialog')).toContainText('none of the recipes use it yet');
+  await page.getByRole('dialog').getByRole('button', { name: 'Fridge' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Back in stock' }).click();
+  await page.reload();
+  await expect(page.locator('section', { hasText: 'Fridge' }).locator('.stock li', { hasText: 'Biltong' })).not.toContainText('run out');
+  await noSideScroll(page);
+  if (info.project.name.startsWith('iphone')) {
+    await box.fill('Dragon fruit');
+    await page.screenshot({ path: 'test-results/shot-own.png' });
+  }
+});
+
 test('something different from spaghetti bolognese', async ({ page }, info) => {
   await page.goto('./#/different');
   await page.locator('.chip', { hasText: 'Spaghetti bolognese' }).click();

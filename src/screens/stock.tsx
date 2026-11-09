@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { INGREDIENTS } from '../data/ingredients';
 import {
-  PLACES, addManyStock, addStock, allBackIn, inStock, moveStock, onList, removeStock, toggleOut, type Place,
+  PLACES, addManyStock, addOwnStock, addStock, allBackIn, inStock, isOwn, knownIngredient, moveStock, onList, removeStock, stockName, toggleOut, type Place,
 } from '../lib/store';
 import { Empty, Sheet, useStore } from '../ui';
 
@@ -25,6 +25,9 @@ export function StockScreen() {
   const found = t.length >= 2 ? ALL.filter((i) => norm(i.name).includes(t) || norm(i.plural).includes(t)).slice(0, 12) : [];
   const outCount = s.stock.filter((x) => x.out).length;
   const item = editing ? s.stock.find((x) => x.ing === editing) : undefined;
+  // Offer "add as my own" unless the typed word is exactly an ingredient we know (then its chip is the way).
+  const known = t.length >= 2 ? knownIngredient(q) : undefined;
+  const ownName = q.trim().replace(/\s+/g, ' ');
 
   return (
     <div class="page">
@@ -43,7 +46,16 @@ export function StockScreen() {
           ))}
         </div>
       )}
-      {t.length >= 2 && found.length === 0 && <p class="small">Nothing called that. Try a simpler word ("chicken", "cheese").</p>}
+      {t.length >= 2 && !known && (
+        <div class="own-add">
+          <p class="small">{found.length === 0 ? 'Not on our list.' : 'Not the one?'} Add "{ownName}" as your own to:</p>
+          <div class="chips">
+            {PLACES.map((p) => (
+              <button class="chip" onClick={() => { addOwnStock(ownName, p); setQ(''); }}>+ {PLACE_NAMES[p]}</button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {s.stock.length === 0 && (
         <Empty>
@@ -60,7 +72,7 @@ export function StockScreen() {
             {outCount > 0 && <button class="btn ghost small" onClick={allBackIn}>Back from the shops: all in</button>}
           </div>
           {PLACES.map((place) => {
-            const items = s.stock.filter((x) => x.place === place).sort((a, b) => INGREDIENTS[a.ing].name.localeCompare(INGREDIENTS[b.ing].name));
+            const items = s.stock.filter((x) => x.place === place).sort((a, b) => stockName(a).localeCompare(stockName(b)));
             if (!items.length) return null;
             return (
               <section>
@@ -70,9 +82,9 @@ export function StockScreen() {
                     <li class={x.out ? 'out' : ''}>
                       <button class="stock-name" onClick={() => toggleOut(x.ing)} aria-pressed={!x.out}>
                         <span class="box">{x.out ? '' : '✓'}</span>
-                        <span>{cap(INGREDIENTS[x.ing].name)}{x.out && <span class="tag">run out</span>}</span>
+                        <span>{cap(stockName(x))}{isOwn(x.ing) && <span class="tag own-tag">own</span>}{x.out && <span class="tag">run out</span>}</span>
                       </button>
-                      <button class="btn ghost small" onClick={() => setEditing(x.ing)} aria-label={`Change ${INGREDIENTS[x.ing].name}`}>•••</button>
+                      <button class="btn ghost small" onClick={() => setEditing(x.ing)} aria-label={`Change ${stockName(x)}`}>•••</button>
                     </li>
                   ))}
                 </ul>
@@ -84,7 +96,8 @@ export function StockScreen() {
       )}
 
       {item && (
-        <Sheet title={cap(INGREDIENTS[item.ing].name)} onClose={() => setEditing(null)}>
+        <Sheet title={cap(stockName(item))} onClose={() => setEditing(null)}>
+          {isOwn(item.ing) && <p class="small">You added this yourself. It stays on your list, but none of the recipes use it yet, so it does not change what the app suggests.</p>}
           <p class="small">Where do you keep it?</p>
           <div class="chips">
             {PLACES.map((p) => <button class={`chip ${item.place === p ? 'on' : ''}`} onClick={() => moveStock(item.ing, p)}>{PLACE_NAMES[p]}</button>)}
