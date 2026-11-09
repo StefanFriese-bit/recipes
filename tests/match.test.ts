@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FAMILIAR } from '../src/data/familiar';
+import { RECIPES } from '../src/data/recipes';
 import { discover, findFamiliar, freeRein, fridgeMatches, ingredientsInText, somethingDifferent, surprise } from '../src/lib/match';
 
 describe('fridge', () => {
@@ -77,7 +78,7 @@ describe('discover', () => {
 describe('free rein', () => {
   it('lists every recipe that fits the filters, each with what to buy given the stock', () => {
     const all = freeRein({}, []);
-    expect(all.length).toBe(150);
+    expect(all.length).toBe(RECIPES.length);
     const quick = freeRein({ maxMinutes: 30 }, ['eggs', 'greek-yoghurt', 'butter', 'chilli-flakes', 'smoked-paprika', 'garlic', 'sourdough']);
     expect(quick.every((m) => m.recipe.minutes <= 30)).toBe(true);
     expect(quick.find((m) => m.recipe.id === 'cilbir')!.missing).toEqual([]);

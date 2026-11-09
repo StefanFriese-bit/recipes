@@ -152,4 +152,121 @@ export const MEAT_SIDES: Record<string, MeatSide> = {
     'Fry the sausages in a separate pan over medium heat, 12–15 minutes, turning, until cooked through.',
     'Serve on the polenta beside the mushrooms.',
   ]),
+  // ---- batch 6 (09/11/2026) ----
+  'lentil-bolognese': m('Beef mince ragù', ['125 g beef-mince'], [
+    'Brown the mince in a separate pan over high heat, breaking it up, about 8 minutes. Season.',
+    "Stir in a ladle of the finished lentil sauce and spoon it over the meat-eaters' spaghetti.",
+  ]),
+  'black-bean-chilli': m('Spiced beef mince', ['125 g beef-mince', '0.5 tsp cumin', '0.5 tsp smoked-paprika'], [
+    'Brown the mince in a separate pan over high heat, breaking it up, 8 minutes. Add the spices and a pinch of salt for the last minute.',
+    "Stir a ladle of the chilli into it and serve on the meat-eaters' rice.",
+  ]),
+  'vetkoek-curried-beans': m('Curried mince', ['125 g beef-mince', '1 tsp curry-powder'], [
+    'Brown the mince in a separate pan, breaking it up, 8 minutes. Add the curry powder and a pinch of salt for a minute.',
+    'Stir in a ladle of the bean curry and simmer 5 minutes. Fill the meat-eaters\' vetkoek with it.',
+  ]),
+  'paneer-tikka-masala': m('Chicken tikka pieces', ['150 g chicken-thighs | in chunks', '1 tbsp plain-yoghurt', '0.5 tsp garam-masala'], [
+    'Mix the chicken with the yoghurt, garam masala and salt. Fry in a hot separate pan, 8–10 minutes, until charred and cooked through.',
+    'Simmer it for 3 minutes in a small pan with a ladle of the masala sauce, for the meat-eaters.',
+  ]),
+  'thai-green-tofu': m('Green curry chicken', ['150 g chicken-thighs | in strips'], [
+    'Fry the chicken in a separate pan, 6–8 minutes, until golden and cooked through.',
+    "Spoon it into the meat-eaters' bowls with the curry.",
+  ]),
+  'salt-pepper-tofu': m('Salt and pepper chicken', ['150 g chicken-thighs | in chunks', '1 tbsp cornflour'], [
+    'Toss the chicken in the cornflour with salt and plenty of pepper. Fry in a separate pan, 8 minutes, turning, until crisp and cooked through.',
+    'Toss with some of the fried garlic, chilli and spring onion.',
+  ]),
+  'miso-aubergine': m('Miso salmon', ['1 pc salmon', '1 tsp miso'], [
+    'Spread the salmon with the miso and grill it on a separate tray next to the aubergine, 8–10 minutes.',
+    "Serve it on the meat-eaters' rice.",
+  ]),
+  'pineapple-fried-rice': m('Garlic prawns', ['100 g prawns', '0.5 clove garlic | sliced'], [
+    'Fry the garlic in a little oil in a separate pan, add the prawns and cook 2–3 minutes until pink.',
+    "Spoon over the meat-eaters' rice.",
+  ]),
+  'peanut-noodles': m('Sesame chicken', ['150 g chicken-breast | sliced', '0.5 tbsp soy-sauce'], [
+    'Fry the chicken in a separate pan, 6 minutes, until cooked through. Add the soy sauce and toss for 30 seconds.',
+    "Lay it over the meat-eaters' noodles.",
+  ]),
+  'cauliflower-tacos': m('Smoky chicken', ['150 g chicken-thighs', '0.5 tsp smoked-paprika'], [
+    'Rub the chicken with the paprika and salt. Fry in a separate pan, 5–6 minutes a side, until cooked through.',
+    "Slice and add to the meat-eaters' tacos.",
+  ]),
+  'bean-quesadillas': m('Chorizo', ['50 g chorizo | diced'], [
+    'Fry the chorizo in a separate small pan until crisp, about 4 minutes.',
+    "Scatter it over the beans in the meat-eaters' quesadillas before you close them.",
+  ]),
+  'halloumi-burgers': m('Beef patty', ['150 g beef-mince'], [
+    'Shape the mince into a thin patty and season well. Fry in a very hot separate pan, 2–3 minutes a side.',
+    "Put it in the meat-eaters' buns, with or instead of the halloumi.",
+  ]),
+  'minestrone-pesto': m('Crispy pancetta', ['40 g pancetta'], [
+    'Fry the pancetta in a separate dry pan until crisp, about 5 minutes.',
+    "Scatter over the meat-eaters' bowls.",
+  ]),
+  'lentil-beetroot-salad': m('Lamb chops', ['2 pc lamb-chops'], [
+    'Season the chops and fry in a hot separate pan, 3–4 minutes a side.',
+    'Rest 3 minutes and serve with the salad.',
+  ]),
+  'baked-orzo-feta': m('Lemon-oregano chicken', ['150 g chicken-thighs', '0.25 tsp dried-oregano', '0.25 pc lemon'], [
+    'Season the chicken with the oregano and salt. Fry in a separate pan, 5–6 minutes a side, until cooked through.',
+    'Squeeze over the lemon, slice and serve on the orzo.',
+  ]),
+  'leek-gruyere-tart': m('Crispy bacon', ['50 g bacon'], [
+    'Fry the bacon in a separate pan until crisp, 6–8 minutes.',
+    'Serve it beside the meat-eaters\' slices of tart.',
+  ]),
+  'miso-mushroom-udon': m('Seared steak', ['125 g beef-steak'], [
+    'Season the steak and sear in a very hot separate pan, 2–3 minutes a side.',
+    "Rest 5 minutes, slice thinly and lay over the meat-eaters' noodles.",
+  ]),
+  'korean-tofu-stew': m('Crispy pork belly', ['100 g pork-belly | thinly sliced', '0.5 tsp gochujang'], [
+    'Fry the pork belly in a separate dry pan until crisp and cooked through, 8–10 minutes. Toss with the gochujang for the last minute.',
+    "Add it to the meat-eaters' bowls of stew.",
+  ]),
+  'veg-tagine': m('Spiced lamb chops', ['2 pc lamb-chops', '0.25 tsp ras-el-hanout'], [
+    'Rub the chops with the spice and salt. Fry in a hot separate pan, 3–4 minutes a side.',
+    'Rest 3 minutes and serve on the couscous.',
+  ]),
+  'veg-laksa': m('Prawns', ['100 g prawns'], [
+    'Fry the prawns in a little oil in a separate pan, 2–3 minutes, until pink.',
+    "Drop them into the meat-eaters' bowls.",
+  ]),
+  'burrito-bowls': m('Chilli-lime steak', ['125 g beef-steak', '0.25 tsp chilli-powder', '0.25 pc lime'], [
+    'Rub the steak with the chilli and salt. Sear in a very hot separate pan, 2–3 minutes a side.',
+    "Rest 5 minutes, squeeze over the lime, slice and add to the meat-eaters' bowls.",
+  ]),
+  'pesto-trofie': m('Lemon chicken', ['150 g chicken-breast', '0.25 pc lemon'], [
+    'Season the chicken and fry in a separate pan, 5–6 minutes a side, until cooked through.',
+    "Squeeze over the lemon, slice and lay on the meat-eaters' pasta.",
+  ]),
+  'cauli-broccoli-cheese': m('Pork sausages', ['2 pc sausages'], [
+    'Roast the sausages on a separate small tray in the same oven, 25 minutes, turning once.',
+    'Serve them beside the cauliflower cheese.',
+  ]),
+  'aubergine-parmigiana': m('Italian sausages', ['2 pc sausages'], [
+    'Roast the sausages on a separate small tray in the same oven, 25–30 minutes, turning once.',
+    'Slice and serve beside the parmigiana.',
+  ]),
+  'stuffed-peppers': m('Spiced lamb patties', ['125 g lamb-mince', '0.25 tsp cumin'], [
+    'Mix the mince with the cumin and salt and shape into 2 small patties. Fry in a separate pan, 3–4 minutes a side.',
+    'Serve beside the peppers.',
+  ]),
+  'rosti-eggs': m('Crispy bacon', ['60 g bacon'], [
+    'Fry the bacon in a separate pan until crisp, 6–8 minutes.',
+    'Serve it with the rösti and egg.',
+  ]),
+  'butternut-risotto': m('Crispy pancetta', ['40 g pancetta'], [
+    'Fry the pancetta in a separate dry pan until crisp, about 5 minutes.',
+    "Scatter over the meat-eaters' risotto with the sage.",
+  ]),
+  'lentil-cottage-pie': m('Pork sausages', ['2 pc sausages'], [
+    'Roast the sausages on a separate small tray in the same oven, 25 minutes, turning once.',
+    'Serve them beside the pie.',
+  ]),
+  'sweet-potato-peanut-stew': m('Spiced chicken', ['150 g chicken-thighs', '0.5 tsp cumin'], [
+    'Rub the chicken with the cumin and salt. Fry in a separate pan, 5–6 minutes a side, until cooked through.',
+    "Slice and lay over the meat-eaters' stew.",
+  ]),
 };
