@@ -2,7 +2,7 @@ import { r } from './r';
 
 // Europe, the Mediterranean and the Middle East. All for 4 unless `serves` says otherwise. Written in our own words.
 export const RECIPES_1 = [
-  r({ id: 'shakshuka', t: 'Shakshuka', c: 'North African', m: 35, e: 1, k: 'breakfast', w: ['omelette'], g: ['vegetarian', 'one-pot'],
+  r({ id: 'shakshuka', t: 'Shakshuka (eggs in spiced tomato)', c: 'North African', m: 35, e: 1, k: 'breakfast', w: ['omelette'], g: ['vegetarian', 'one-pot'],
     d: 'Eggs poached in a smoky pepper and tomato sauce, eaten straight from the pan with bread.',
     i: ['2 tbsp olive-oil', '1 pc onion | sliced', '2 pc red-pepper | sliced', '3 clove garlic | sliced', '1 tsp cumin', '1 tsp smoked-paprika',
       '1/2 tsp chilli-flakes', '2 tin chopped-tomatoes', '1 tsp sugar', '8 pc eggs', '100 g feta? | crumbled', '1 handful coriander? | chopped', 'taste salt', '1 pc bread | to serve'],
@@ -12,7 +12,7 @@ export const RECIPES_1 = [
       'Make 8 hollows with a spoon and crack an egg into each. Cover and cook gently for 6-8 minutes, until the whites are set but the yolks still soft.',
       'Scatter with feta and coriander and serve from the pan with bread.'] }),
 
-  r({ id: 'pasta-norma', t: 'Pasta alla Norma', c: 'Italian', m: 40, e: 1, k: 'main', w: ['bolognese', 'pasta-bake'], g: ['vegetarian'],
+  r({ id: 'pasta-norma', t: 'Pasta alla Norma (aubergine and tomato)', c: 'Italian', m: 40, e: 1, k: 'main', w: ['bolognese', 'pasta-bake'], g: ['vegetarian'],
     d: 'Sicily\'s aubergine pasta: soft fried aubergine in garlicky tomato sauce, finished with ricotta and basil.',
     i: ['2 pc aubergine | in 2 cm cubes', '5 tbsp olive-oil', '3 clove garlic | sliced', '1/2 tsp chilli-flakes', '2 tin chopped-tomatoes', '400 g pasta-short',
       '1 handful basil', '150 g ricotta', '40 g parmesan | grated', 'taste salt'],
@@ -36,7 +36,7 @@ export const RECIPES_1 = [
       'Cook the pasta, toss with the ragù and a splash of pasta water, and serve with parmesan.'],
     tip: 'Even better the next day. Freezes well.' }),
 
-  r({ id: 'chicken-cacciatore', t: 'Chicken cacciatore', c: 'Italian', m: 70, e: 2, k: 'main', w: ['chicken-stew', 'chicken-curry'], g: ['one-pot'],
+  r({ id: 'chicken-cacciatore', t: 'Chicken cacciatore (tomato and wine stew)', c: 'Italian', m: 70, e: 2, k: 'main', w: ['chicken-stew', 'chicken-curry'], g: ['one-pot'],
     d: '"Hunter\'s" chicken: thighs braised with peppers, mushrooms, olives, wine and rosemary.',
     i: ['8 pc chicken-thighs-bone | skin on', '2 tbsp olive-oil', '1 pc onion | sliced', '1 pc red-pepper | sliced', '200 g mushrooms | quartered', '3 clove garlic | sliced',
       '2 sprig rosemary', '150 ml white-wine', '1 tin chopped-tomatoes', '60 g olives', '1 handful parsley | chopped', 'taste salt'],
@@ -77,7 +77,7 @@ export const RECIPES_1 = [
       'Turn the oven to 230°C for the last 25-30 minutes, until the skin bubbles and crackles.',
       'Rest for 20 minutes, then slice thickly. Spoon over the pan juices.'] }),
 
-  r({ id: 'focaccia', t: 'Rosemary focaccia', c: 'Italian', m: 180, e: 2, k: 'bake', w: ['pizza'], g: ['vegetarian', 'oven'],
+  r({ id: 'focaccia', t: 'Rosemary focaccia (Italian flatbread)', c: 'Italian', m: 180, e: 2, k: 'bake', w: ['pizza'], g: ['vegetarian', 'oven'],
     d: 'Bubbly, olive-oily bread with crisp edges. Mostly waiting; very little work.',
     i: ['500 g bread-flour', '7 g dried-yeast', '10 g salt | for the dough', '400 ml water | lukewarm', '6 tbsp olive-oil', '2 sprig rosemary', '1 tsp salt | flaky, for the top'],
     s: ['Mix the flour, yeast, salt and water to a sticky dough with a spoon. Cover and leave 15 minutes.',
@@ -87,7 +87,7 @@ export const RECIPES_1 = [
       'Heat the oven to 230°C. Oil your fingers and press deep dimples all over. Drizzle the rest of the oil, scatter rosemary and flaky salt.',
       'Bake 20-25 minutes until deep golden. Cool in the tin for 10 minutes.'] }),
 
-  r({ id: 'kleftiko', t: 'Lamb kleftiko', c: 'Greek', m: 270, e: 2, k: 'main', w: ['roast-lamb', 'potjie'], g: ['oven', 'one-pot'],
+  r({ id: 'kleftiko', t: 'Lamb kleftiko (slow-baked lamb)', c: 'Greek', m: 270, e: 2, k: 'main', w: ['roast-lamb', 'potjie'], g: ['oven', 'one-pot'],
     d: 'Lamb sealed in a parcel with potatoes, lemon, garlic and oregano and cooked slowly until it falls apart.',
     i: ['1.5 kg lamb-shoulder | bone-in', '1 kg potato | in wedges', '2 pc red-onion | in wedges', '1 pc red-pepper | in strips', '8 clove garlic | whole',
       '2 pc lemon | juice, plus the squeezed halves', '2 tbsp dried-oregano', '4 tbsp olive-oil', '2 pc tomato | quartered', '150 g feta? | in chunks', 'taste salt'],
@@ -116,7 +116,7 @@ export const RECIPES_1 = [
       'Stir in the beans and most of the herbs. Bake uncovered for 35-40 minutes until thick and jammy at the edges.',
       'Finish with the rest of the herbs, a drizzle of oil, and feta if you like.'] }),
 
-  r({ id: 'souvlaki', t: 'Chicken souvlaki with tzatziki', c: 'Greek', m: 40, e: 1, k: 'main', w: ['braai', 'fajitas', 'peri-chicken'], g: ['braai'],
+  r({ id: 'souvlaki', t: 'Chicken souvlaki (skewers) with tzatziki', c: 'Greek', m: 40, e: 1, k: 'main', w: ['braai', 'fajitas', 'peri-chicken'], g: ['braai'],
     d: 'Lemon-oregano chicken skewers with cool garlic yoghurt, wrapped in warm pitta.',
     i: ['800 g chicken-thighs | in chunks', '1 pc lemon | zest and juice', '2 tsp dried-oregano', '3 clove garlic | grated', '3 tbsp olive-oil',
       '1 pc cucumber | grated and squeezed', '300 g greek-yoghurt', '1 handful mint | chopped', '8 pc pitta', '2 pc tomato | sliced', '1 pc red-onion | thinly sliced', 'taste salt'],
@@ -125,7 +125,7 @@ export const RECIPES_1 = [
       'Thread the chicken onto skewers. Grill, braai or griddle over high heat for 10-12 minutes, turning, until charred and cooked through.',
       'Warm the pittas and fill with chicken, tzatziki, tomato and onion.'] }),
 
-  r({ id: 'moussaka', t: 'Moussaka', c: 'Greek', m: 150, e: 3, k: 'main', w: ['lasagne', 'cottage-pie', 'bolognese'], g: ['oven', 'make-ahead'],
+  r({ id: 'moussaka', t: 'Moussaka (aubergine and lamb bake)', c: 'Greek', m: 150, e: 3, k: 'main', w: ['lasagne', 'cottage-pie', 'bolognese'], g: ['oven', 'make-ahead'],
     d: 'Layers of roasted aubergine and cinnamon-spiced lamb under a thick, golden béchamel.',
     i: ['3 pc aubergine | in 1 cm slices', '5 tbsp olive-oil', '750 g lamb-mince', '1 pc onion | chopped', '3 clove garlic | chopped', '1 tsp cinnamon', '1 tsp dried-oregano',
       '150 ml red-wine', '1 tin chopped-tomatoes', '2 tbsp tomato-paste', '60 g butter', '60 g plain-flour', '600 ml milk', '1/4 tsp nutmeg', '2 pc eggs', '80 g parmesan | grated', 'taste salt'],
@@ -155,7 +155,7 @@ export const RECIPES_1 = [
       'Spread a thin layer of the lamb right to the edges. Bake two at a time on the hot tray for 6-8 minutes until crisp at the edges.',
       'Toss the red onion with sumac and the rest of the parsley. Pile onto the flatbreads, squeeze over lemon, roll up and eat.'] }),
 
-  r({ id: 'fattoush', t: 'Fattoush with crisp pitta', c: 'Lebanese', m: 25, e: 1, k: 'salad', w: ['greek-salad', 'chicken-salad'], g: ['vegetarian', 'vegan'],
+  r({ id: 'fattoush', t: 'Fattoush (Lebanese bread salad)', c: 'Lebanese', m: 25, e: 1, k: 'salad', w: ['greek-salad', 'chicken-salad'], g: ['vegetarian', 'vegan'],
     d: 'A crunchy chopped salad with toasted pitta and a sour sumac dressing.',
     i: ['3 pc pitta | torn', '6 tbsp olive-oil', '4 pc tomato | chopped', '1 pc cucumber | chopped', '6 pc radish | sliced', '1 pc lettuce | shredded', '4 pc spring-onion | sliced',
       '1 handful mint | leaves', '1 handful parsley | leaves', '2 tsp sumac', '1 pc lemon | juice', '1 tbsp pomegranate-molasses?', '1 clove garlic | grated', 'taste salt'],
@@ -183,7 +183,7 @@ export const RECIPES_1 = [
       'Cover and cook on the lowest heat for 15 minutes, then rest 10 minutes off the heat.',
       'Fluff up, top with the crispy onions and parsley, and serve with yoghurt if you like.'] }),
 
-  r({ id: 'lamb-tagine', t: 'Lamb tagine with apricots', c: 'Moroccan', m: 180, e: 2, k: 'main', w: ['lamb-curry', 'beef-stew', 'potjie'], g: ['one-pot', 'make-ahead'],
+  r({ id: 'lamb-tagine', t: 'Lamb tagine (Moroccan stew) with apricots', c: 'Moroccan', m: 180, e: 2, k: 'main', w: ['lamb-curry', 'beef-stew', 'potjie'], g: ['one-pot', 'make-ahead'],
     d: 'Slow-cooked lamb in a sweet-savoury, warmly spiced sauce with apricots and almonds.',
     i: ['1 kg lamb-shoulder | boneless, in chunks', '2 tbsp olive-oil', '2 pc onion | chopped', '3 clove garlic | chopped', '3 cm ginger | grated', '2 tsp ras-el-hanout',
       '1 tsp cinnamon', '1 tsp cumin', '1 tin chopped-tomatoes', '500 ml chicken-stock', '150 g dried-apricots', '1 tbsp honey', '50 g almonds | toasted',
@@ -234,7 +234,7 @@ export const RECIPES_1 = [
       'Add tomatoes, chickpeas and stock and simmer 15 minutes, mashing a few chickpeas to thicken.',
       'Stir in the spinach to wilt and the vinegar. Top with the crisp chorizo, serve with bread.'] }),
 
-  r({ id: 'coq-au-vin', t: 'Coq au vin', c: 'French', m: 150, e: 3, k: 'main', w: ['chicken-stew', 'beef-stew', 'roast-chicken'], g: ['one-pot', 'make-ahead'],
+  r({ id: 'coq-au-vin', t: 'Coq au vin (chicken in red wine)', c: 'French', m: 150, e: 3, k: 'main', w: ['chicken-stew', 'beef-stew', 'roast-chicken'], g: ['one-pot', 'make-ahead'],
     d: 'Chicken braised in red wine with bacon, mushrooms and baby onions. A proper French classic.',
     i: ['8 pc chicken-thighs-bone', '1 tbsp butter', '150 g bacon | in strips', '12 pc shallot | peeled, whole', '250 g mushrooms', '3 clove garlic | crushed', '2 tbsp plain-flour',
       '2 tbsp tomato-paste', '750 ml red-wine', '250 ml chicken-stock', '4 sprig thyme', '2 pc bay-leaf', '1 handful parsley | chopped', 'taste salt'],
@@ -244,7 +244,7 @@ export const RECIPES_1 = [
       'Return the chicken with thyme and bay, cover and simmer gently for 1 hour.',
       'Lift out the chicken and boil the sauce for 10 minutes to thicken. Return the chicken, scatter parsley. Serve with mash or bread.'] }),
 
-  r({ id: 'bourguignon', t: 'Beef bourguignon', c: 'French', m: 210, e: 3, k: 'main', w: ['beef-stew', 'cottage-pie', 'potjie'], g: ['one-pot', 'make-ahead'],
+  r({ id: 'bourguignon', t: 'Beef bourguignon (red wine stew)', c: 'French', m: 210, e: 3, k: 'main', w: ['beef-stew', 'cottage-pie', 'potjie'], g: ['one-pot', 'make-ahead'],
     d: 'Beef in a deep, glossy red wine sauce with bacon and mushrooms. Slow, but simple.',
     i: ['1.2 kg beef-chuck | in large chunks', '2 tbsp olive-oil', '150 g bacon | in strips', '2 pc carrot | thickly sliced', '1 pc onion | chopped', '3 clove garlic | crushed',
       '2 tbsp plain-flour', '2 tbsp tomato-paste', '750 ml red-wine', '300 ml beef-stock', '4 sprig thyme', '2 pc bay-leaf', '12 pc shallot | peeled', '300 g mushrooms', '30 g butter',
@@ -264,7 +264,7 @@ export const RECIPES_1 = [
       'Stir in the flour for 1 minute, then the wine, stock and Worcestershire. Simmer 20 minutes and season.',
       'Toast the bread, ladle the soup into ovenproof bowls, float the toasts on top, cover with cheese and grill until bubbling.'] }),
 
-  r({ id: 'croque-monsieur', t: 'Croque monsieur', c: 'French', m: 25, e: 1, k: 'main', w: ['toastie', 'mac-cheese'], g: [],
+  r({ id: 'croque-monsieur', t: 'Croque monsieur (toasted ham and cheese)', c: 'French', m: 25, e: 1, k: 'main', w: ['toastie', 'mac-cheese'], g: [],
     d: 'The ultimate ham and cheese toastie: mustard, gruyère and a blanket of béchamel, grilled until bubbling.',
     i: ['30 g butter', '2 tbsp plain-flour', '300 ml milk', '1/4 tsp nutmeg', '150 g gruyere | grated', '8 slice bread', '2 tsp dijon', '200 g bacon | or sliced ham, cooked'],
     s: ['Melt the butter, stir in the flour for a minute, then whisk in the milk and simmer until thick. Add nutmeg and a third of the cheese.',
@@ -272,7 +272,7 @@ export const RECIPES_1 = [
       'Toast the sandwiches in a pan or under the grill on both sides.',
       'Spread the sauce over the tops, scatter the rest of the cheese and grill until golden and bubbling.'] }),
 
-  r({ id: 'tartiflette', t: 'Tartiflette', c: 'French', m: 70, e: 2, k: 'main', w: ['mac-cheese', 'cottage-pie'], g: ['oven'],
+  r({ id: 'tartiflette', t: 'Tartiflette (potato, bacon and cheese bake)', c: 'French', m: 70, e: 2, k: 'main', w: ['mac-cheese', 'cottage-pie'], g: ['oven'],
     d: 'An Alpine bake of potatoes, bacon, onions and cream under a lot of melted cheese.',
     i: ['1.2 kg potato | waxy, sliced 5 mm', '200 g bacon | in strips', '1 tbsp butter', '2 pc onion | sliced', '2 clove garlic | sliced', '100 ml white-wine', '200 ml cream',
       '250 g gruyere | sliced or grated', 'taste black-pepper'],
@@ -281,7 +281,7 @@ export const RECIPES_1 = [
       'Heat the oven to 200°C. Layer potatoes and the bacon mix in a buttered dish, pour over the cream and season with pepper.',
       'Cover with the cheese and bake 25-30 minutes until golden and bubbling. Serve with a green salad.'] }),
 
-  r({ id: 'ratatouille', t: 'Oven ratatouille', c: 'French', m: 75, e: 1, k: 'main', w: ['pasta-bake', 'greek-salad'], g: ['vegetarian', 'vegan', 'oven', 'make-ahead'],
+  r({ id: 'ratatouille', t: 'Oven ratatouille (baked Provençal veg)', c: 'French', m: 75, e: 1, k: 'main', w: ['pasta-bake', 'greek-salad'], g: ['vegetarian', 'vegan', 'oven', 'make-ahead'],
     d: 'Summer vegetables roasted then folded into a garlicky tomato sauce. Lovely with bread or alongside roast meat.',
     i: ['2 pc aubergine | in chunks', '3 pc courgette | in chunks', '2 pc red-pepper | in chunks', '1 pc yellow-pepper | in chunks', '2 pc red-onion | in wedges', '6 tbsp olive-oil',
       '4 clove garlic | sliced', '1 tin chopped-tomatoes', '4 sprig thyme', '1 handful basil', '1 tbsp red-wine-vinegar', 'taste salt'],

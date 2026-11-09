@@ -2,7 +2,7 @@ import { r } from './r';
 
 // Asia: India, Thailand, Vietnam, China, Japan, Korea, Malaysia, Indonesia, Sri Lanka. All for 4. Written in our own words.
 export const RECIPES_2 = [
-  r({ id: 'dal-tadka', t: 'Dal tadka', c: 'Indian', m: 45, e: 1, k: 'main', w: ['chicken-curry', 'beef-curry', 'butternut-soup'], g: ['vegetarian', 'vegan', 'one-pot'],
+  r({ id: 'dal-tadka', t: 'Dal tadka (spiced yellow lentils)', c: 'Indian', m: 45, e: 1, k: 'main', w: ['chicken-curry', 'beef-curry', 'butternut-soup'], g: ['vegetarian', 'vegan', 'one-pot'],
     d: 'Silky red lentils finished with a sizzling spiced oil poured over at the end.',
     i: ['300 g red-lentils | rinsed', '1 tsp turmeric', '1.2 l water', '3 tbsp sunflower-oil', '1 tsp cumin-seeds', '1 tsp mustard-seeds', '1 pc onion | finely chopped',
       '4 clove garlic | sliced', '3 cm ginger | grated', '2 pc green-chilli | slit', '2 pc tomato | chopped', '1 tsp garam-masala', '1 handful coriander | chopped',
@@ -12,7 +12,7 @@ export const RECIPES_2 = [
       'Add the onion and cook 8 minutes until golden, then the garlic, ginger and chilli for 2 minutes, then the tomatoes until soft.',
       'Stir in the garam masala, pour this over the dal and stir. Finish with coriander and lemon. Serve with rice.'] }),
 
-  r({ id: 'palak-paneer', t: 'Palak paneer', c: 'Indian', m: 40, e: 2, k: 'main', w: ['chicken-curry', 'butternut-soup'], g: ['vegetarian'],
+  r({ id: 'palak-paneer', t: 'Palak paneer (spinach and Indian cheese)', c: 'Indian', m: 40, e: 2, k: 'main', w: ['chicken-curry', 'butternut-soup'], g: ['vegetarian'],
     d: 'Golden cubes of paneer in a smooth, gently spiced spinach sauce.',
     i: ['400 g paneer | in cubes', '3 tbsp sunflower-oil', '500 g spinach', '1 pc onion | chopped', '4 clove garlic', '3 cm ginger', '1 pc green-chilli', '1 tsp cumin-seeds',
       '1 tsp coriander-ground', '1 tsp garam-masala', '2 pc tomato | chopped', '4 tbsp cream', 'taste salt'],
@@ -22,7 +22,7 @@ export const RECIPES_2 = [
       'Add the ground spices and tomatoes and cook until thick, 5 minutes. Stir in the spinach and a splash of water; simmer 5 minutes.',
       'Add the paneer and cream, season and warm through. Serve with rice or naan.'] }),
 
-  r({ id: 'rogan-josh', t: 'Lamb rogan josh', c: 'Indian', m: 120, e: 2, k: 'main', w: ['lamb-curry', 'beef-curry', 'beef-stew'], g: ['one-pot', 'make-ahead'],
+  r({ id: 'rogan-josh', t: 'Lamb rogan josh (Kashmiri lamb curry)', c: 'Indian', m: 120, e: 2, k: 'main', w: ['lamb-curry', 'beef-curry', 'beef-stew'], g: ['one-pot', 'make-ahead'],
     d: 'A deep red Kashmiri lamb curry, rich with whole spices, yoghurt and paprika.',
     i: ['1 kg lamb-shoulder | boneless, in chunks', '4 tbsp sunflower-oil', '6 pc cardamom', '4 pc cloves', '1 pc cinnamon-stick', '2 pc bay-leaf', '2 pc onion | finely chopped',
       '5 clove garlic | grated', '4 cm ginger | grated', '2 tbsp paprika', '1 tsp chilli-powder', '2 tsp coriander-ground', '1 tsp cumin', '200 g plain-yoghurt | whisked',
@@ -33,7 +33,7 @@ export const RECIPES_2 = [
       'Return the lamb, add 300 ml water and salt, cover and simmer gently 1¼-1½ hours until tender.',
       'Stir in the garam masala and scatter with coriander. Serve with rice.'] }),
 
-  r({ id: 'chicken-biryani', t: 'Chicken biryani', c: 'Indian', m: 120, e: 3, k: 'main', w: ['chicken-curry', 'fried-rice'], g: ['oven'],
+  r({ id: 'chicken-biryani', t: 'Chicken biryani (spiced layered rice)', c: 'Indian', m: 120, e: 3, k: 'main', w: ['chicken-curry', 'fried-rice'], g: ['oven'],
     d: 'Layers of spiced yoghurt chicken and fragrant saffron rice, sealed and cooked slowly together.',
     i: ['1 kg chicken-thighs | in large pieces', '250 g plain-yoghurt', '4 clove garlic | grated', '4 cm ginger | grated', '2 tsp garam-masala', '1 tsp turmeric', '1 tsp chilli-powder',
       '400 g rice | basmati, soaked 30 min', '6 pc cardamom', '1 pc cinnamon-stick', '4 pc cloves', '1 pinch saffron | in 3 tbsp warm milk', '3 pc onion | thinly sliced',
@@ -45,7 +45,7 @@ export const RECIPES_2 = [
       'Seal the lid with foil, cook on the hob for 5 minutes, then in the oven for 50 minutes.',
       'Rest 10 minutes, scatter the remaining onions and herbs and gently fold as you serve.'] }),
 
-  r({ id: 'chana-masala', t: 'Chana masala', c: 'Indian', m: 35, e: 1, k: 'main', w: ['chilli', 'chicken-curry'], g: ['vegetarian', 'vegan', 'one-pot'],
+  r({ id: 'chana-masala', t: 'Chana masala (chickpea curry)', c: 'Indian', m: 35, e: 1, k: 'main', w: ['chilli', 'chicken-curry'], g: ['vegetarian', 'vegan', 'one-pot'],
     d: 'Chickpeas in a tangy, warmly spiced onion and tomato gravy. Quick and very cheap.',
     i: ['3 tbsp sunflower-oil', '1 tsp cumin-seeds', '2 pc onion | finely chopped', '4 clove garlic | grated', '3 cm ginger | grated', '1 pc green-chilli | chopped',
       '2 tsp coriander-ground', '1 tsp cumin', '1 tsp turmeric', '1/2 tsp chilli-powder', '1 tin chopped-tomatoes', '2 tin chickpeas | drained', '1 tsp garam-masala',
@@ -65,7 +65,7 @@ export const RECIPES_2 = [
       'Add the coconut milk and simmer 10 minutes. Season.',
       'Slip in the fish and simmer gently 5-6 minutes until it just flakes. Add lime juice and coriander. Serve with rice.'] }),
 
-  r({ id: 'aloo-gobi', t: 'Roasted aloo gobi', c: 'Indian', m: 45, e: 1, k: 'side', w: ['roast-chicken', 'beef-curry'], g: ['vegetarian', 'vegan', 'oven'],
+  r({ id: 'aloo-gobi', t: 'Roasted aloo gobi (potato and cauliflower)', c: 'Indian', m: 45, e: 1, k: 'side', w: ['roast-chicken', 'beef-curry'], g: ['vegetarian', 'vegan', 'oven'],
     d: 'Cauliflower and potatoes roasted with cumin, turmeric and chilli until charred at the edges.',
     i: ['1 pc cauliflower | in florets', '500 g potato | in 2 cm cubes', '4 tbsp sunflower-oil', '2 tsp cumin-seeds', '1 tsp turmeric', '1 tsp garam-masala', '1/2 tsp chilli-powder',
       '3 cm ginger | grated', '1 pc lemon', '1 handful coriander', 'taste salt'],
@@ -103,7 +103,7 @@ export const RECIPES_2 = [
       'Add the noodles and sauce and toss for 2-3 minutes until the noodles are soft.',
       'Toss in the bean sprouts and spring onions. Serve with peanuts, chilli and lime.'] }),
 
-  r({ id: 'larb', t: 'Pork larb lettuce cups', c: 'Thai', m: 20, e: 1, k: 'main', w: ['tacos', 'chicken-salad'], g: ['quick'],
+  r({ id: 'larb', t: 'Pork larb (spicy mince) lettuce cups', c: 'Thai', m: 20, e: 1, k: 'main', w: ['tacos', 'chicken-salad'], g: ['quick'],
     d: 'Hot, sour, minty pork mince eaten in crisp lettuce leaves. Light and very fast.',
     i: ['1 tbsp sunflower-oil', '500 g pork-mince', '2 pc shallot | thinly sliced', '2 stalk lemongrass? | very finely chopped', '3 tbsp fish-sauce', '2 pc lime | juice',
       '1 tsp sugar', '1 tsp chilli-flakes', '1 handful mint', '1 handful coriander', '4 pc spring-onion | sliced', '1 pc lettuce | leaves', '300 g rice? | sticky or jasmine'],
@@ -121,7 +121,7 @@ export const RECIPES_2 = [
       'Season with fish sauce, lime and sugar so it is sour, salty and a little sweet.',
       'Serve with chilli and coriander. (Leave the lemongrass and ginger in the bowl.)'] }),
 
-  r({ id: 'pho', t: 'Beef pho', c: 'Vietnamese', m: 210, e: 3, k: 'soup', w: ['chicken-soup', 'beef-stew'], g: ['make-ahead'],
+  r({ id: 'pho', t: 'Beef pho (Vietnamese noodle soup)', c: 'Vietnamese', m: 210, e: 3, k: 'soup', w: ['chicken-soup', 'beef-stew'], g: ['make-ahead'],
     d: 'A clear, aromatic beef broth with rice noodles, thin steak, herbs and lime.',
     i: ['1 kg beef-short-rib', '2 l water', '2 pc onion | halved', '8 cm ginger | halved', '3 pc star-anise', '1 pc cinnamon-stick', '4 pc cloves', '1 tbsp coriander-ground',
       '4 tbsp fish-sauce', '1 tbsp sugar', '400 g rice-noodles', '250 g beef-steak | very thinly sliced', '200 g bean-sprouts', '1 handful basil', '1 handful mint',
@@ -132,7 +132,7 @@ export const RECIPES_2 = [
       'Soak or cook the noodles by the packet and divide between big bowls with the rib meat and raw steak slices.',
       'Pour over the boiling broth so it cooks the steak. Pile on sprouts, herbs, lime and chilli at the table.'] }),
 
-  r({ id: 'banh-mi', t: 'Lemongrass pork bánh mì', c: 'Vietnamese', m: 40, e: 2, k: 'main', w: ['burgers', 'toastie', 'tacos'], g: [],
+  r({ id: 'banh-mi', t: 'Lemongrass pork bánh mì (Vietnamese baguette)', c: 'Vietnamese', m: 40, e: 2, k: 'main', w: ['burgers', 'toastie', 'tacos'], g: [],
     d: 'Crusty rolls stuffed with caramelised pork, quick pickles, herbs and spicy mayo.',
     i: ['600 g pork-fillet | thinly sliced', '2 stalk lemongrass | finely chopped', '2 clove garlic | grated', '2 tbsp fish-sauce', '1 tbsp brown-sugar', '1 tbsp sunflower-oil',
       '2 pc carrot | in matchsticks', '1/2 pc cucumber | in strips', '100 ml rice-vinegar', '1 tbsp sugar | for the pickle', '4 tbsp mayonnaise', '1 tbsp sriracha',
@@ -151,7 +151,7 @@ export const RECIPES_2 = [
       'Mix the fish sauce, lime, sugar, garlic, chilli and 3 tbsp water for the dressing.',
       'Pile noodles, vegetables, herbs and chicken in bowls, pour over the dressing and scatter peanuts.'] }),
 
-  r({ id: 'kung-pao', t: 'Kung pao chicken', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['chicken-stirfry', 'fried-rice'], g: ['spicy'],
+  r({ id: 'kung-pao', t: 'Kung pao chicken (with peanuts and chilli)', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['chicken-stirfry', 'fried-rice'], g: ['spicy'],
     d: 'Sichuan stir-fry: chicken, peanuts and dried chillies in a glossy sweet-sour sauce.',
     i: ['600 g chicken-thighs | in cubes', '1 tbsp cornflour', '3 tbsp soy-sauce', '1 tbsp rice-vinegar', '1 tbsp sugar', '1 tbsp hoisin?', '2 tbsp sunflower-oil',
       '6 pc dried-chillies', '3 clove garlic | sliced', '3 cm ginger | in matchsticks', '1 pc red-pepper | in squares', '6 pc spring-onion | in lengths', '80 g peanuts',
@@ -161,7 +161,7 @@ export const RECIPES_2 = [
       'Heat the oil in a wok until smoking. Fry the chillies for 20 seconds, then the chicken for 5 minutes until browned.',
       'Add the garlic, ginger and pepper for 2 minutes, then the sauce, spring onions and peanuts; toss until glossy. Serve with rice.'] }),
 
-  r({ id: 'mapo-tofu', t: 'Mapo tofu', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['chilli', 'bolognese'], g: ['spicy'],
+  r({ id: 'mapo-tofu', t: 'Mapo tofu (spicy tofu with pork mince)', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['chilli', 'bolognese'], g: ['spicy'],
     d: 'Soft tofu in a fiery, savoury pork and chilli sauce. Tastes like nothing else.',
     i: ['2 tbsp sunflower-oil', '250 g pork-mince', '3 clove garlic | chopped', '3 cm ginger | chopped', '2 tbsp gochujang | or chilli bean paste', '1 tsp chilli-flakes',
       '2 tbsp soy-sauce', '300 ml chicken-stock', '500 g tofu | in 2 cm cubes', '2 tsp cornflour | mixed with 2 tbsp water', '4 pc spring-onion | sliced', '1 tsp sesame-oil',
@@ -180,7 +180,7 @@ export const RECIPES_2 = [
       'Mix the leftover marinade with the rest of the honey. Brush over, turn, and roast 25-30 minutes more, brushing twice.',
       'Finish under the grill for a couple of minutes for charred edges. Rest, slice, and serve with rice and steamed pak choi.'] }),
 
-  r({ id: 'dan-dan', t: 'Dan dan noodles', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['bolognese', 'chicken-stirfry'], g: ['spicy', 'quick'],
+  r({ id: 'dan-dan', t: 'Dan dan noodles (spicy pork and sesame)', c: 'Chinese', m: 25, e: 1, k: 'main', w: ['bolognese', 'chicken-stirfry'], g: ['spicy', 'quick'],
     d: 'Noodles in a nutty, spicy sesame sauce with crispy pork and greens.',
     i: ['400 g egg-noodles', '1 tbsp sunflower-oil', '300 g pork-mince', '1 tbsp hoisin', '3 tbsp tahini | or peanut butter', '3 tbsp soy-sauce', '1 tbsp rice-vinegar',
       '1 tbsp sugar', '2 tbsp chilli-flakes | in 3 tbsp hot oil', '2 clove garlic | grated', '2 pc pak-choi | quartered', '4 pc spring-onion | sliced', '30 g peanuts | chopped'],
@@ -202,7 +202,7 @@ export const RECIPES_2 = [
       'Mix the dipping soy, vinegar and chilli and serve.'],
     tip: 'Freeze uncooked dumplings on a tray, then bag them. Cook from frozen with 2 minutes more steaming.' }),
 
-  r({ id: 'chicken-katsu', t: 'Chicken katsu curry', c: 'Japanese', m: 45, e: 2, k: 'main', w: ['schnitzel', 'chicken-curry'], g: [],
+  r({ id: 'chicken-katsu', t: 'Chicken katsu (crumbed) curry', c: 'Japanese', m: 45, e: 2, k: 'main', w: ['schnitzel', 'chicken-curry'], g: [],
     d: 'Crisp panko chicken with a mild, sweet Japanese curry sauce and sticky rice.',
     i: ['4 pc chicken-breast | flattened', '50 g plain-flour | for coating', '2 pc eggs | beaten', '120 g panko', '200 ml sunflower-oil | for frying', '1 tbsp sunflower-oil | for the sauce',
       '1 pc onion | chopped', '2 pc carrot | chopped', '2 clove garlic', '2 tbsp curry-powder', '2 tbsp plain-flour | for the sauce', '600 ml chicken-stock', '2 tbsp soy-sauce',
@@ -241,7 +241,7 @@ export const RECIPES_2 = [
       'Cook the noodles with the pak choi and corn; drain into bowls.',
       'Ladle over the broth, top with pork, halved eggs, spring onion, sesame oil and chilli.'] }),
 
-  r({ id: 'bibimbap', t: 'Bibimbap', c: 'Korean', m: 45, e: 2, k: 'main', w: ['fried-rice', 'chicken-stirfry'], g: [],
+  r({ id: 'bibimbap', t: 'Bibimbap (Korean rice bowl)', c: 'Korean', m: 45, e: 2, k: 'main', w: ['fried-rice', 'chicken-stirfry'], g: [],
     d: 'A bowl of rice topped with seasoned veg, beef, a fried egg and spicy gochujang sauce, all mixed together.',
     i: ['300 g sushi-rice', '400 g beef-steak | thinly sliced', '3 tbsp soy-sauce', '1 tbsp sugar', '3 tbsp sesame-oil', '2 clove garlic | grated', '2 pc carrot | in matchsticks',
       '200 g spinach', '150 g bean-sprouts', '200 g mushrooms | sliced', '1 pc courgette | in matchsticks', '4 pc eggs', '3 tbsp gochujang', '1 tbsp rice-vinegar',
@@ -263,7 +263,7 @@ export const RECIPES_2 = [
       'Scatter with sesame and spring onions and eat straight away.'],
     tip: 'Never leave hot oil alone, and keep a lid nearby.' }),
 
-  r({ id: 'kimchi-fried-rice', t: 'Gochujang fried rice with fried eggs', c: 'Korean', m: 20, e: 1, k: 'main', w: ['fried-rice'], g: ['quick'],
+  r({ id: 'kimchi-fried-rice', t: 'Gochujang (chilli paste) fried rice with eggs', c: 'Korean', m: 20, e: 1, k: 'main', w: ['fried-rice'], g: ['quick'],
     d: 'Crispy, spicy, buttery fried rice with bacon, topped with runny eggs. Best with day-old rice.',
     i: ['600 g rice | cooked and cold', '150 g bacon | chopped', '1 tbsp butter', '2 tbsp gochujang', '1 tbsp soy-sauce', '1/4 pc cabbage | shredded', '4 pc spring-onion | sliced',
       '4 pc eggs', '1 tsp sesame-oil', '1 tbsp sesame-seeds'],
@@ -272,7 +272,7 @@ export const RECIPES_2 = [
       'Stir in most of the spring onion and the sesame oil.',
       'Fry the eggs separately and serve on top with sesame seeds and the rest of the spring onion.'] }),
 
-  r({ id: 'beef-rendang', t: 'Beef rendang', c: 'Malaysian', m: 210, e: 3, k: 'main', w: ['beef-curry', 'beef-stew'], g: ['make-ahead'],
+  r({ id: 'beef-rendang', t: 'Beef rendang (dry coconut curry)', c: 'Malaysian', m: 210, e: 3, k: 'main', w: ['beef-curry', 'beef-stew'], g: ['make-ahead'],
     d: 'Beef cooked down in coconut and spices until almost dry and deeply caramelised. Patient cooking.',
     i: ['1.2 kg beef-chuck | in chunks', '6 pc shallot', '6 clove garlic', '5 cm ginger', '3 stalk lemongrass', '6 pc dried-chillies | soaked', '1 tsp turmeric',
       '3 tbsp sunflower-oil', '1 pc cinnamon-stick', '3 pc star-anise', '5 pc cardamom', '2 tin coconut-milk', '6 pc kaffir-lime', '60 g desiccated-coconut | toasted',
@@ -283,7 +283,7 @@ export const RECIPES_2 = [
       'Add the toasted coconut, sugar and salt. Keep stirring until the sauce clings to the beef and the oil separates, dark brown.',
       'Serve with rice.'] }),
 
-  r({ id: 'nasi-goreng', t: 'Nasi goreng', c: 'Indonesian', m: 25, e: 1, k: 'main', w: ['fried-rice', 'chicken-stirfry'], g: ['quick'],
+  r({ id: 'nasi-goreng', t: 'Nasi goreng (Indonesian fried rice)', c: 'Indonesian', m: 25, e: 1, k: 'main', w: ['fried-rice', 'chicken-stirfry'], g: ['quick'],
     d: 'Indonesian fried rice with chicken and prawns, sweet soy, chilli and a fried egg on top.',
     i: ['2 tbsp sunflower-oil', '4 pc shallot | sliced', '3 clove garlic | chopped', '2 pc red-chilli | chopped', '300 g chicken-thighs | diced', '200 g prawns?',
       '600 g rice | cooked and cold', '3 tbsp soy-sauce', '2 tbsp brown-sugar', '1 tbsp tomato-paste', '4 pc eggs', '1 pc cucumber | sliced', '2 pc tomato | sliced', '1 pc lime'],

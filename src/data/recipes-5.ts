@@ -54,7 +54,7 @@ export const RECIPES_5 = [
       'Blend smooth and season with lime and soy.',
       'Serve with a swirl of coconut, coriander and peanuts.'] }),
 
-  r({ id: 'mulligatawny', t: 'Mulligatawny soup', c: 'Anglo-Indian', m: 50, e: 1, k: 'soup', w: ['chicken-soup', 'chicken-curry'], g: [],
+  r({ id: 'mulligatawny', t: 'Mulligatawny (spiced curry soup)', c: 'Anglo-Indian', m: 50, e: 1, k: 'soup', w: ['chicken-soup', 'chicken-curry'], g: [],
     d: 'A spiced chicken, lentil and apple soup: halfway between soup and curry.',
     i: ['2 tbsp sunflower-oil', '1 pc onion | chopped', '2 pc carrot | chopped', '1 pc apple | grated', '3 clove garlic | grated', '3 cm ginger | grated', '2 tbsp curry-powder',
       '150 g red-lentils', '1.2 l chicken-stock', '1 tin coconut-milk', '400 g chicken-thighs', '1 pc lemon', '1 handful coriander', 'taste salt'],
@@ -97,7 +97,7 @@ export const RECIPES_5 = [
       'Mix the garlic, soy, vinegar, sugar, sesame oil and chilli.',
       'Toss with the cucumber and scatter sesame seeds.'] }),
 
-  r({ id: 'tabbouleh', t: 'Tabbouleh', c: 'Lebanese', m: 25, e: 1, k: 'salad', w: ['greek-salad'], g: ['vegetarian', 'vegan'],
+  r({ id: 'tabbouleh', t: 'Tabbouleh (parsley and bulgur salad)', c: 'Lebanese', m: 25, e: 1, k: 'salad', w: ['greek-salad'], g: ['vegetarian', 'vegan'],
     d: 'Mostly parsley: a green, lemony herb salad with a little bulgur and tomato.',
     i: ['60 g bulgur', '3 bunch parsley | finely chopped', '1 handful mint | finely chopped', '4 pc tomato | finely diced', '4 pc spring-onion | finely sliced', '2 pc lemon | juice',
       '5 tbsp olive-oil', '1/2 tsp allspice?', 'taste salt'],
@@ -105,7 +105,7 @@ export const RECIPES_5 = [
       'Mix with the herbs, tomatoes and spring onions.',
       'Dress with the lemon, oil, allspice and salt just before serving.'] }),
 
-  r({ id: 'huevos-rancheros', t: 'Huevos rancheros', c: 'Mexican', m: 25, e: 1, k: 'breakfast', w: ['omelette'], g: ['vegetarian'],
+  r({ id: 'huevos-rancheros', t: 'Huevos rancheros (eggs on tortillas with salsa)', c: 'Mexican', m: 25, e: 1, k: 'breakfast', w: ['omelette'], g: ['vegetarian'],
     d: 'Fried eggs on crisp tortillas with a spicy tomato salsa, beans and avocado.',
     i: ['2 tbsp sunflower-oil', '1 pc onion | chopped', '2 clove garlic | chopped', '1 pc green-chilli | chopped', '1 tsp cumin', '1 tin chopped-tomatoes', '1 tin black-beans | drained',
       '8 pc corn-tortillas', '8 pc eggs', '2 pc avocado | sliced', '100 g feta | crumbled', '1 handful coriander', '1 pc lime', 'taste salt'],
@@ -148,7 +148,7 @@ export const RECIPES_5 = [
       'Whisk the tahini, lemon, garlic and 4-5 tbsp water until pourable; season.',
       'Drizzle over the cauliflower with molasses, pistachios and parsley. Cut into wedges.'] }),
 
-  r({ id: 'pasta-e-ceci', t: 'Pasta e ceci', c: 'Italian', m: 30, e: 1, k: 'main', w: ['bolognese', 'chicken-soup'], g: ['vegetarian', 'vegan', 'one-pot'],
+  r({ id: 'pasta-e-ceci', t: 'Pasta e ceci (pasta and chickpeas)', c: 'Italian', m: 30, e: 1, k: 'main', w: ['bolognese', 'chicken-soup'], g: ['vegetarian', 'vegan', 'one-pot'],
     d: 'A thick, comforting Roman pasta and chickpea stew. Pantry cooking at its best.',
     i: ['4 tbsp olive-oil', '1 pc onion | chopped', '3 clove garlic | sliced', '2 sprig rosemary | chopped', '1/2 tsp chilli-flakes', '2 tbsp tomato-paste', '2 tin chickpeas',
       '1.2 l veg-stock', '200 g pasta-short | small shapes', '40 g parmesan? | to serve', 'taste salt'],
@@ -157,7 +157,7 @@ export const RECIPES_5 = [
       'Add the pasta and cook in the soup until tender, stirring often, adding water if needed.',
       'Season and serve with more olive oil and parmesan.'] }),
 
-  r({ id: 'cacio-e-pepe', t: 'Cacio e pepe', c: 'Italian', m: 15, e: 2, k: 'main', w: ['carbonara', 'mac-cheese'], g: ['vegetarian', 'quick'],
+  r({ id: 'cacio-e-pepe', t: 'Cacio e pepe (cheese and pepper pasta)', c: 'Italian', m: 15, e: 2, k: 'main', w: ['carbonara', 'mac-cheese'], g: ['vegetarian', 'quick'],
     d: 'Three ingredients: spaghetti, cheese and black pepper, turned into a glossy sauce with pasta water.',
     i: ['400 g spaghetti', '2 tsp black-pepper | coarsely ground', '30 g butter', '120 g parmesan | very finely grated'],
     s: ['Cook the spaghetti in less water than usual (it makes the water starchier). Keep 2 mugs of water.',
@@ -165,7 +165,7 @@ export const RECIPES_5 = [
       'Add the drained pasta and toss. Off the heat, add the cheese a handful at a time with splashes of water, tossing fast until creamy, not clumpy.',
       'Serve at once with more pepper.'] }),
 
-  r({ id: 'puttanesca', t: 'Spaghetti puttanesca', c: 'Italian', m: 20, e: 1, k: 'main', w: ['bolognese', 'pasta-bake'], g: ['quick'],
+  r({ id: 'puttanesca', t: 'Spaghetti puttanesca (tomato, olive and caper)', c: 'Italian', m: 20, e: 1, k: 'main', w: ['bolognese', 'pasta-bake'], g: ['quick'],
     d: 'A punchy pantry sauce of tomatoes, olives, capers, anchovy and chilli.',
     i: ['3 tbsp olive-oil', '4 clove garlic | sliced', '6 pc anchovies', '1/2 tsp chilli-flakes', '2 tin chopped-tomatoes', '100 g olives | halved', '2 tbsp capers', '400 g spaghetti',
       '1 handful parsley | chopped'],
@@ -218,7 +218,7 @@ export const RECIPES_5 = [
       'Add the shallots and garlic, then the fish sauce, pepper and water.',
       'Simmer uncovered 25-30 minutes until the sauce is sticky and the pork tender. Scatter spring onions. Serve with rice.'] }),
 
-  r({ id: 'lamb-kofta', t: 'Lamb kofta with tahini yoghurt', c: 'Turkish', m: 35, e: 1, k: 'main', w: ['burgers', 'meatballs', 'braai'], g: ['braai'],
+  r({ id: 'lamb-kofta', t: 'Lamb kofta (spiced meatballs) with tahini yoghurt', c: 'Turkish', m: 35, e: 1, k: 'main', w: ['burgers', 'meatballs', 'braai'], g: ['braai'],
     d: 'Spiced lamb skewers grilled until charred, with tahini yoghurt, salad and warm flatbread.',
     i: ['600 g lamb-mince', '1 pc onion | grated and squeezed', '2 clove garlic | grated', '2 tsp cumin', '1 tsp coriander-ground', '1 tsp smoked-paprika', '1/2 tsp cinnamon',
       '1 handful parsley | chopped', '200 g greek-yoghurt', '2 tbsp tahini', '1 pc lemon', '4 pc pitta', '2 pc tomato', '1 pc cucumber', 'taste salt'],
@@ -227,7 +227,7 @@ export const RECIPES_5 = [
       'Mix the yoghurt, tahini, a squeeze of lemon and salt.',
       'Serve with warm pittas, chopped tomato and cucumber, and the sauce.'] }),
 
-  r({ id: 'chicken-piccata', t: 'Chicken piccata', c: 'Italian', m: 25, e: 1, k: 'main', w: ['schnitzel', 'roast-chicken'], g: ['quick'],
+  r({ id: 'chicken-piccata', t: 'Chicken piccata (lemon and caper sauce)', c: 'Italian', m: 25, e: 1, k: 'main', w: ['schnitzel', 'roast-chicken'], g: ['quick'],
     d: 'Thin chicken escalopes in a buttery lemon and caper sauce. Very quick.',
     i: ['4 pc chicken-breast | sliced in half horizontally', '50 g plain-flour', '2 tbsp olive-oil', '50 g butter', '2 clove garlic | sliced', '150 ml chicken-stock', '150 ml white-wine',
       '1 pc lemon | juice', '2 tbsp capers', '1 handful parsley | chopped', 'taste salt'],

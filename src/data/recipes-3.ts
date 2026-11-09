@@ -2,7 +2,7 @@ import { r } from './r';
 
 // The Americas, Africa, the Caribbean and Portugal. All for 4. Written in our own words.
 export const RECIPES_3 = [
-  r({ id: 'birria-tacos', t: 'Birria tacos', c: 'Mexican', m: 240, e: 3, k: 'main', w: ['tacos', 'chilli', 'beef-stew'], g: ['make-ahead', 'spicy'],
+  r({ id: 'birria-tacos', t: 'Birria tacos (slow-cooked spiced beef)', c: 'Mexican', m: 240, e: 3, k: 'main', w: ['tacos', 'chilli', 'beef-stew'], g: ['make-ahead', 'spicy'],
     d: 'Beef slow-cooked in a dried-chilli broth, crisped in tortillas with cheese and dunked in the broth.',
     i: ['1.2 kg beef-chuck | in large pieces', '6 pc dried-chillies | seeds removed', '1 pc onion | halved', '6 clove garlic', '1 tin chopped-tomatoes', '2 tsp cumin',
       '2 tsp dried-oregano', '1 pc cinnamon-stick', '2 pc bay-leaf', '2 tbsp apple-cider-vinegar', '1 l beef-stock', '16 pc corn-tortillas', '200 g mozzarella | grated',
@@ -14,7 +14,7 @@ export const RECIPES_3 = [
       'Dip each tortilla in the fat, fry in a pan, top with cheese and beef, fold and fry until crisp on both sides.',
       'Serve with cups of hot broth for dipping, chopped onion, coriander and lime.'] }),
 
-  r({ id: 'chicken-tinga', t: 'Chicken tinga tostadas', c: 'Mexican', m: 40, e: 1, k: 'main', w: ['tacos', 'fajitas'], g: ['spicy'],
+  r({ id: 'chicken-tinga', t: 'Chicken tinga tostadas (smoky chicken on crisp tortillas)', c: 'Mexican', m: 40, e: 1, k: 'main', w: ['tacos', 'fajitas'], g: ['spicy'],
     d: 'Shredded chicken in a smoky chipotle-style tomato sauce, piled on crisp tortillas.',
     i: ['700 g chicken-thighs', '2 tbsp sunflower-oil', '1 pc onion | sliced', '3 clove garlic | chopped', '2 tsp smoked-paprika', '1 tsp chilli-flakes', '1 tsp cumin',
       '1 tsp dried-oregano', '1 tin chopped-tomatoes', '12 pc corn-tortillas', '1 tin black-beans | warmed', '2 pc avocado | sliced', '100 g feta | crumbled', '150 ml sour-cream',
@@ -25,7 +25,7 @@ export const RECIPES_3 = [
       'Brush the tortillas with oil and bake at 200°C for 8 minutes until crisp.',
       'Top with beans, chicken, avocado, feta and sour cream; squeeze over lime.'] }),
 
-  r({ id: 'carnitas', t: 'Pork carnitas', c: 'Mexican', m: 210, e: 2, k: 'main', w: ['tacos', 'fajitas', 'roast-beef'], g: ['oven'],
+  r({ id: 'carnitas', t: 'Pork carnitas (slow-cooked crispy pork)', c: 'Mexican', m: 210, e: 2, k: 'main', w: ['tacos', 'fajitas', 'roast-beef'], g: ['oven'],
     d: 'Pork shoulder cooked low with orange and cumin until meltingly soft, then crisped in its own fat.',
     i: ['1.5 kg pork-shoulder | in big chunks', '2 tsp salt', '2 tsp cumin', '2 tsp dried-oregano', '1 pc onion | quartered', '6 clove garlic', '2 pc orange | juice, plus the halves',
       '2 pc lime | juice', '2 pc bay-leaf', '12 pc corn-tortillas', '1 pc red-onion | finely chopped', '1 handful coriander', '2 pc avocado'],
@@ -73,7 +73,7 @@ export const RECIPES_3 = [
       'Toss the cabbage and carrot with the mayo and the rest of the vinegar.',
       'Pile into buns with slaw.'] }),
 
-  r({ id: 'gumbo', t: 'Chicken and sausage gumbo', c: 'American', m: 120, e: 3, k: 'main', w: ['chicken-stew', 'chilli'], g: ['one-pot'],
+  r({ id: 'gumbo', t: 'Chicken and sausage gumbo (Cajun stew)', c: 'American', m: 120, e: 3, k: 'main', w: ['chicken-stew', 'chilli'], g: ['one-pot'],
     d: 'A Louisiana stew built on a deep brown roux, with chicken, smoky sausage, peppers and celery.',
     i: ['80 ml sunflower-oil', '80 g plain-flour', '1 pc onion | chopped', '1 pc green-pepper | chopped', '3 stalk celery | chopped', '4 clove garlic | chopped', '250 g chorizo | sliced',
       '700 g chicken-thighs | in chunks', '1 tin chopped-tomatoes', '1.2 l chicken-stock', '2 tsp smoked-paprika', '1 tsp cayenne', '1 tsp dried-thyme', '2 pc bay-leaf',
@@ -111,7 +111,7 @@ export const RECIPES_3 = [
       'Blend the coriander, chillies, mayo, feta, remaining garlic and lime juice into a thick green sauce.',
       'Rest the chicken 10 minutes, carve, and serve with the potatoes and sauce.'] }),
 
-  r({ id: 'empanadas', t: 'Beef empanadas', c: 'Argentinian', m: 90, e: 3, k: 'main', w: ['chicken-pie', 'cottage-pie'], g: ['oven', 'make-ahead'],
+  r({ id: 'empanadas', t: 'Beef empanadas (pastry turnovers)', c: 'Argentinian', m: 90, e: 3, k: 'main', w: ['chicken-pie', 'cottage-pie'], g: ['oven', 'make-ahead'],
     d: 'Golden pastry half-moons filled with spiced beef, onion, egg and olives.',
     i: ['500 g plain-flour', '120 g butter | cold, cubed', '1 tsp salt | for the pastry', '1 pc eggs | for the pastry', '150 ml water | cold', '1 tbsp sunflower-oil', '500 g beef-mince',
       '2 pc onion | finely chopped', '1 pc red-pepper | finely chopped', '2 tsp cumin', '2 tsp smoked-paprika', '1/2 tsp chilli-flakes', '2 pc eggs | hard-boiled, chopped',
@@ -122,7 +122,7 @@ export const RECIPES_3 = [
       'Put a heaped spoon of filling on each, fold over, and crimp the edges.',
       'Brush with egg and bake on lined trays for 20-25 minutes until golden.'] }),
 
-  r({ id: 'chimichurri-steak', t: 'Steak with chimichurri', c: 'Argentinian', m: 25, e: 1, k: 'main', w: ['steak-chips', 'braai'], g: ['braai'],
+  r({ id: 'chimichurri-steak', t: 'Steak with chimichurri (herb sauce)', c: 'Argentinian', m: 25, e: 1, k: 'main', w: ['steak-chips', 'braai'], g: ['braai'],
     d: 'Simply grilled steak with a sharp, garlicky parsley and oregano sauce.',
     i: ['4 pc beef-steak', '1 bunch parsley | very finely chopped', '2 tsp dried-oregano', '3 clove garlic | very finely chopped', '1 pc red-chilli | finely chopped', '3 tbsp red-wine-vinegar',
       '120 ml olive-oil', '1 kg potato? | for roast potatoes or chips', 'taste salt'],
@@ -171,7 +171,7 @@ export const RECIPES_3 = [
       'Add the potatoes and cook 30 minutes until tender and the sauce is thick. Season and add coriander.',
       'Cut each loaf in half, hollow out the middle (keep the plug) and fill with curry. Put the plug on top.'] }),
 
-  r({ id: 'potjie-oxtail', t: 'Oxtail potjie', c: 'South African', m: 270, e: 3, k: 'main', w: ['potjie', 'beef-stew', 'braai'], g: ['one-pot', 'make-ahead'],
+  r({ id: 'potjie-oxtail', t: 'Oxtail potjie (slow pot stew)', c: 'South African', m: 270, e: 3, k: 'main', w: ['potjie', 'beef-stew', 'braai'], g: ['one-pot', 'make-ahead'],
     d: 'Oxtail cooked low and slow in red wine until sticky and falling off the bone. Layered, never stirred.',
     i: ['2 kg oxtail', '2 tbsp plain-flour', '3 tbsp sunflower-oil', '2 pc onion | chopped', '4 clove garlic | chopped', '2 tbsp tomato-paste', '375 ml red-wine',
       '500 ml beef-stock', '1 tin chopped-tomatoes', '3 sprig thyme', '2 pc bay-leaf', '4 pc carrot | in chunks', '500 g potato | baby, halved', '200 g mushrooms',
@@ -182,7 +182,7 @@ export const RECIPES_3 = [
       'Layer the carrots, potatoes, then mushrooms and beans on top. Do not stir. Cover and cook 45 minutes more until the vegetables are tender.',
       'Season and serve with rice or pap.'] }),
 
-  r({ id: 'chakalaka', t: 'Chakalaka with pap', c: 'South African', m: 40, e: 1, k: 'side', w: ['braai', 'chilli'], g: ['vegetarian', 'vegan', 'braai'],
+  r({ id: 'chakalaka', t: 'Chakalaka (spicy veg relish) with pap', c: 'South African', m: 40, e: 1, k: 'side', w: ['braai', 'chilli'], g: ['vegetarian', 'vegan', 'braai'],
     d: 'A spicy township relish of peppers, carrots and beans, with soft maize pap. Essential with a braai.',
     i: ['2 tbsp sunflower-oil', '1 pc onion | chopped', '1 pc green-pepper | chopped', '1 pc red-pepper | chopped', '2 pc carrot | grated', '2 clove garlic | chopped',
       '1 pc red-chilli | chopped', '2 tsp curry-powder', '1 tsp smoked-paprika', '2 pc tomato | chopped', '1 tin cannellini | baked or white beans', '250 g polenta | white maize meal',
@@ -237,7 +237,7 @@ export const RECIPES_3 = [
       'Whisk in the tomatoes, peanut butter and stock, add the chicken and sweet potato. Simmer 30 minutes.',
       'Stir in the spinach to wilt, season. Serve on rice with peanuts.'] }),
 
-  r({ id: 'chicken-yassa', t: 'Chicken yassa', c: 'West African', m: 75, e: 2, k: 'main', w: ['roast-chicken', 'chicken-stew'], g: [],
+  r({ id: 'chicken-yassa', t: 'Chicken yassa (lemon and onion chicken)', c: 'West African', m: 75, e: 2, k: 'main', w: ['roast-chicken', 'chicken-stew'], g: [],
     d: 'Senegal\'s chicken in a tangy, mustardy sauce of slow-cooked onions and lemon.',
     i: ['8 pc chicken-thighs-bone', '4 pc lemon | juice', '3 tbsp dijon', '4 pc onion | sliced', '3 clove garlic | grated', '1 pc red-chilli | sliced', '3 tbsp sunflower-oil',
       '1 tsp dried-thyme', '250 ml chicken-stock', '80 g green-olives', '300 g rice | to serve', 'taste salt'],
@@ -265,7 +265,7 @@ export const RECIPES_3 = [
       'Lay the fish (and prawns) on top, sprinkle with paprika, pour in the coconut milk, cover and simmer 10 minutes.',
       'Add the rest of the lime and the coriander. Serve with rice.'] }),
 
-  r({ id: 'sosaties', t: 'Lamb sosaties with apricots', c: 'South African', m: 40, e: 2, k: 'main', w: ['braai', 'roast-lamb'], g: ['braai'],
+  r({ id: 'sosaties', t: 'Lamb sosaties (kebabs) with apricots', c: 'South African', m: 40, e: 2, k: 'main', w: ['braai', 'roast-lamb'], g: ['braai'],
     d: 'Cape Malay curried lamb kebabs threaded with apricots and onion, marinated overnight.',
     i: ['1 kg lamb-leg | in 3 cm cubes', '1 tbsp sunflower-oil', '2 pc onion | 1 chopped, 1 in chunks', '2 tbsp curry-powder', '1 tsp turmeric', '3 tbsp apricot-jam',
       '4 tbsp apple-cider-vinegar', '2 pc bay-leaf', '150 g dried-apricots', 'taste salt'],

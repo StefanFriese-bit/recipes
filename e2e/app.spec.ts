@@ -22,16 +22,28 @@ test('stock list: basics, add, run out, back in -> cook from stock -> recipe -> 
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-stock.png' });
   await page.getByRole('link', { name: 'Find a recipe from my stock' }).click();
   await expect(page.getByRole('tab', { name: 'From my stock' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.locator('.card', { hasText: 'Turkish eggs' })).toHaveCount(0);
+  await expect(page.locator('.fold', { hasText: 'Turkish eggs' })).toHaveCount(0);
   await page.goto('./#/stock');
   await page.getByRole('button', { name: 'Back from the shops: all in' }).click();
   await expect(page.getByText('36 in stock.')).toBeVisible();
   await page.locator('.tabbar a', { hasText: 'Cook' }).click();
   await page.getByRole('tab', { name: 'From my stock' }).click();
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-fromstock.png' });
-  const card = page.locator('.card', { hasText: 'Turkish eggs' }).first();
-  await expect(card).toContainText('Nothing to buy');
-  await card.click();
+  const card = page.locator('.fold', { hasText: 'Turkish eggs' }).first();
+  await expect(card.locator('.badge')).toHaveText('All in stock');
+  // the badge sits on the same line as "Turkish · 15 min · Easy · Veg"
+  const [mb, bb] = [await card.locator('.fold-meta').boundingBox(), await card.locator('.badge').boundingBox()];
+  expect(Math.abs((mb!.y + mb!.height / 2) - (bb!.y + bb!.height / 2))).toBeLessThan(4);
+  // folded: name, "Turkish · … · Easy" and the badge show; the description waits behind the arrow
+  await expect(card.locator('.fold-meta')).toContainText('Turkish');
+  await expect(card.locator('.blurb')).toHaveCount(0);
+  await card.getByRole('button', { name: /Show details of Turkish eggs/ }).click();
+  await expect(card.locator('.blurb')).toBeVisible();
+  await expect(card.locator('.uses')).toContainText('Uses your');
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-fold-open.png' });
+  await card.getByRole('button', { name: /Hide details of Turkish eggs/ }).click();
+  await expect(card.locator('.blurb')).toHaveCount(0);
+  await card.locator('.fold-main').click();
   await expect(page.getByRole('heading', { name: 'Turkish eggs (çılbır)' })).toBeVisible();
   await expect(page.locator('.lines li', { hasText: '8 eggs' })).toBeVisible();
   await page.getByRole('button', { name: 'More people' }).click();
@@ -119,11 +131,17 @@ test('plan two recipes, shopping list adds them up, ticks survive a reload', asy
 test('free rein filters, surprise, cooking view, hide', async ({ page }, info) => {
   await page.goto('./#/discover'); // the first version's address lands on Free rein
   await expect(page.getByRole('tab', { name: 'Free rein' })).toHaveAttribute('aria-selected', 'true');
+  // foreign names carry a short English meaning
+  await page.getByPlaceholder('Search: a dish').fill('ceci');
+  await expect(page.locator('.fold-main strong').first()).toHaveText('Pasta e ceci (pasta and chickpeas)');
+  await page.getByPlaceholder('Search: a dish').fill('');
   await page.locator('.chip', { hasText: 'Weekend project' }).click();
-  const n = await page.locator('.card').count();
+  const n = await page.locator('.fold').count();
   expect(n).toBeGreaterThan(10);
-  for (const t of await page.locator('.card .meta').allTextContents()) expect(t).toContain('Weekend project');
-  for (const b of await page.locator('.card .badge').allTextContents()) expect(b).toMatch(/to buy/);
+  for (const t of await page.locator('.fold .fold-meta').allTextContents()) expect(t).toContain('Weekend project');
+  for (const b of await page.locator('.fold .badge').allTextContents()) expect(b).toMatch(/to buy/);
+  // every row starts folded, so the names are what you scroll through
+  await expect(page.locator('.fold .blurb')).toHaveCount(0);
   await noSideScroll(page);
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-free.png' });
   await page.getByRole('button', { name: 'Surprise me' }).click();
@@ -141,7 +159,7 @@ test('free rein filters, surprise, cooking view, hide', async ({ page }, info) =
   await page.goto('./#/find');
   await page.getByRole('tab', { name: 'Free rein' }).click();
   await page.getByPlaceholder('Search: a dish').fill('norma');
-  await expect(page.locator('.card')).toHaveCount(0);
+  await expect(page.locator('.fold')).toHaveCount(0);
 });
 
 test('works with no signal once opened', async ({ page, context }, info) => {

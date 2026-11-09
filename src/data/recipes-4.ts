@@ -80,7 +80,7 @@ export const RECIPES_4 = [
       'Add the lentils, stock and thyme and simmer 25-30 minutes until tender. Stir in the vinegar, a spoon of duck fat and the parsley.',
       'Serve the duck on the lentils.'] }),
 
-  r({ id: 'moules', t: 'Moules marinière with fries', c: 'French', m: 30, e: 1, k: 'main', w: ['fish-chips', 'steak-chips'], g: ['fish'],
+  r({ id: 'moules', t: 'Moules marinière (mussels in white wine) with fries', c: 'French', m: 30, e: 1, k: 'main', w: ['fish-chips', 'steak-chips'], g: ['fish'],
     d: 'Mussels steamed open in white wine, garlic and cream. Ready in ten minutes once they are clean.',
     i: ['2 kg mussels', '40 g butter', '2 pc shallot | finely chopped', '3 clove garlic | sliced', '250 ml white-wine', '100 ml cream', '1 handful parsley | chopped',
       '1 pc bread | crusty, to serve'],
@@ -89,7 +89,7 @@ export const RECIPES_4 = [
       'Add the wine and bring to a hard boil, tip in the mussels, cover and cook 4-5 minutes, shaking, until they open.',
       'Stir in the cream and parsley. Throw away any that stayed shut. Serve with bread or fries.'] }),
 
-  r({ id: 'cassoulet', t: 'Cassoulet', c: 'French', m: 240, e: 3, k: 'main', w: ['sausage-mash', 'beef-stew', 'chilli'], g: ['oven', 'one-pot', 'make-ahead'],
+  r({ id: 'cassoulet', t: 'Cassoulet (duck, pork and bean bake)', c: 'French', m: 240, e: 3, k: 'main', w: ['sausage-mash', 'beef-stew', 'chilli'], g: ['oven', 'one-pot', 'make-ahead'],
     d: 'White beans baked slowly with duck, sausage and pork under a crisp crumb crust. Weekend feast.',
     i: ['4 pc duck-legs', '400 g pork-belly | in chunks', '6 pc sausages', '1 pc onion | chopped', '2 pc carrot | chopped', '6 clove garlic | sliced', '2 tbsp tomato-paste',
       '3 tin cannellini | drained', '500 ml chicken-stock', '4 sprig thyme', '2 pc bay-leaf', '80 g breadcrumbs', '1 handful parsley | chopped', 'taste salt'],
@@ -148,7 +148,7 @@ export const RECIPES_4 = [
       'Bring the water and 1 tsp salt to the boil, whisk in the polenta, and cook on low, stirring, for 10-40 minutes (by the packet). Beat in the butter and parmesan.',
       'Serve the ribs on the polenta with the sauce and a scatter of lemon zest and parsley.'] }),
 
-  r({ id: 'pide', t: 'Turkish pide with spinach, feta and egg', c: 'Turkish', m: 120, e: 2, k: 'main', w: ['pizza', 'omelette'], g: ['vegetarian', 'oven'],
+  r({ id: 'pide', t: 'Turkish pide (flatbread) with spinach, feta and egg', c: 'Turkish', m: 120, e: 2, k: 'main', w: ['pizza', 'omelette'], g: ['vegetarian', 'oven'],
     d: 'Canoe-shaped flatbreads filled with spinach, feta and a runny egg. Pizza\'s cousin.',
     i: ['400 g bread-flour', '7 g dried-yeast', '1 tsp salt | for the dough', '250 ml water | warm', '2 tbsp olive-oil', '400 g spinach', '1 pc onion | chopped', '1 tsp chilli-flakes',
       '200 g feta | crumbled', '100 g mozzarella | grated', '4 pc eggs', '20 g butter | melted'],
@@ -198,7 +198,7 @@ export const RECIPES_4 = [
       'For the sauce, melt the butter and sugar together, add the cream and bubble 3 minutes.',
       'Poke holes in the warm pudding, pour over some sauce, and serve with the rest.'] }),
 
-  r({ id: 'tarte-tatin', t: 'Apple tarte tatin', c: 'French', m: 75, e: 2, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven'], serves: 6,
+  r({ id: 'tarte-tatin', t: 'Apple tarte tatin (upside-down tart)', c: 'French', m: 75, e: 2, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven'], serves: 6,
     d: 'Apples cooked in dark caramel under puff pastry, then flipped out shiny and golden.',
     i: ['120 g sugar', '60 g butter', '6 pc apple | peeled, quartered, cored', '320 g puff-pastry', '1/2 tsp cinnamon?', '200 ml creme-fraiche | to serve'],
     s: ['Heat the oven to 200°C. In a 24 cm ovenproof frying pan, melt the sugar over medium heat without stirring until it turns a deep amber caramel.',
@@ -216,7 +216,7 @@ export const RECIPES_4 = [
       'Divide between the ramekins (chill now for up to a day if you like).',
       'Bake 10-12 minutes (14 from the fridge) until risen with a slight wobble. Turn out and serve at once.'] }),
 
-  r({ id: 'pavlova', t: 'Pavlova with berries and cream', c: 'Australian', m: 120, e: 2, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven', 'make-ahead'], serves: 8,
+  r({ id: 'pavlova', t: 'Pavlova (meringue) with berries and cream', c: 'Australian', m: 120, e: 2, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven', 'make-ahead'], serves: 8,
     d: 'Crisp outside, marshmallowy inside, piled with whipped cream and fruit.',
     i: ['4 pc eggs | whites only', '220 g sugar', '1 tsp cornflour', '1 tsp white-wine-vinegar', '1 tsp vanilla', '300 ml cream', '400 g berries', '2 pc mango? | or passion fruit'],
     s: ['Heat the oven to 140°C. Draw a 22 cm circle on baking paper on a tray.',
@@ -225,7 +225,7 @@ export const RECIPES_4 = [
       'Bake 1 hour 15 minutes, then turn off the oven and leave it inside to cool completely.',
       'Just before serving, whip the cream, spread over and top with the fruit.'] }),
 
-  r({ id: 'malva-pudding', t: 'Malva pudding', c: 'South African', m: 60, e: 1, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven'], serves: 6,
+  r({ id: 'malva-pudding', t: 'Malva pudding (sticky apricot sponge)', c: 'South African', m: 60, e: 1, k: 'dessert', w: ['pancakes'], g: ['vegetarian', 'oven'], serves: 6,
     d: 'A spongy, caramelised apricot pudding soaked in a hot buttery cream sauce.',
     i: ['200 g sugar | for the pudding', '2 pc eggs', '1 tbsp apricot-jam', '150 g plain-flour', '1 tsp bicarb', '1 tbsp butter | melted, for the pudding', '1 tsp white-wine-vinegar',
       '125 ml milk', '200 ml cream', '100 g butter | for the sauce', '100 g sugar | for the sauce', '80 ml water | hot'],
@@ -252,7 +252,7 @@ export const RECIPES_4 = [
       'Spread over half the cream, repeat the layers, and dust thickly with cocoa.',
       'Chill at least 6 hours, ideally overnight.'] }),
 
-  r({ id: 'panna-cotta', t: 'Vanilla panna cotta with berries', c: 'Italian', m: 20, e: 1, k: 'dessert', w: ['pancakes'], g: ['make-ahead'], serves: 6,
+  r({ id: 'panna-cotta', t: 'Vanilla panna cotta (set cream) with berries', c: 'Italian', m: 20, e: 1, k: 'dessert', w: ['pancakes'], g: ['make-ahead'], serves: 6,
     d: 'A silky set cream with a wobble, under a tart berry sauce. Make it the day before.',
     i: ['3 sheet gelatine', '500 ml cream', '150 ml milk', '80 g sugar', '1 tsp vanilla', '300 g berries', '2 tbsp icing-sugar', '1/2 pc lemon | juice'],
     s: ['Soak the gelatine in cold water for 5 minutes.',
