@@ -13,9 +13,24 @@ export const neededLines = (r: Recipe): Line[] => {
 
 export interface FridgeMatch {
   recipe: Recipe;
-  used: string[]; // fridge items the recipe uses
+  used: string[]; // stock items the recipe uses
   covered: { line: Line; swap: Swap }[]; // missing, but a swap from what you have works
   missing: Line[];
+}
+
+/** What a recipe needs that you have, can swap from what you have, or would have to buy. */
+export function analyse(recipe: Recipe, got: Set<string>): Omit<FridgeMatch, 'recipe'> {
+  const ok = (ing: string) => got.has(ing) || isStaple(ing);
+  const used: string[] = [];
+  const covered: FridgeMatch['covered'] = [];
+  const missing: Line[] = [];
+  for (const line of neededLines(recipe)) {
+    if (got.has(line.ing)) { used.push(line.ing); continue; }
+    const swap = swapsFor(line.ing).find((s) => !s.limited && s.parts.every((p) => ok(p.ing)));
+    if (swap) covered.push({ line, swap });
+    else missing.push(line);
+  }
+  return { used, covered, missing };
 }
 
 /** Recipes you can (nearly) make from what you have. Sorted: fewest missing, then most of your things used. */
@@ -23,24 +38,21 @@ export function fridgeMatches(have: Iterable<string>, hidden: Iterable<string> =
   const got = new Set(have);
   const hide = new Set(hidden);
   if (got.size === 0) return [];
-  const ok = (ing: string) => got.has(ing) || isStaple(ing);
   const out: FridgeMatch[] = [];
   for (const recipe of RECIPES) {
     if (hide.has(recipe.id)) continue;
-    const used: string[] = [];
-    const covered: FridgeMatch['covered'] = [];
-    const missing: Line[] = [];
-    for (const line of neededLines(recipe)) {
-      if (got.has(line.ing)) { used.push(line.ing); continue; }
-      const swap = swapsFor(line.ing).find((s) => s.parts.every((p) => ok(p.ing)));
-      if (swap) covered.push({ line, swap });
-      else missing.push(line);
-    }
-    if (used.length === 0 || missing.length > maxMissing) continue;
-    out.push({ recipe, used, covered, missing });
+    const a = analyse(recipe, got);
+    if (a.used.length === 0 || a.missing.length > maxMissing) continue;
+    out.push({ recipe, ...a });
   }
   return out.sort((a, b) => a.missing.length - b.missing.length || b.used.length - a.used.length || a.covered.length - b.covered.length
     || a.recipe.title.localeCompare(b.recipe.title));
+}
+
+/** Free rein: every recipe that fits the filters, whatever is in stock, each with what you would have to buy. */
+export function freeRein(f: Filters, have: Iterable<string>, hidden: Iterable<string> = []): FridgeMatch[] {
+  const got = new Set(have);
+  return discover(f, hidden).map((recipe) => ({ recipe, ...analyse(recipe, got) }));
 }
 
 const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();

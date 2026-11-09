@@ -12,8 +12,8 @@ const WHOLE = new Set<Unit>(['pc', 'clove', 'tin', 'bunch', 'slice', 'sprig', 's
 export interface ShopItem { key: string; ing: string; aisle: Aisle; text: string; forRecipes: string[]; inFridge: boolean }
 
 /** One line per ingredient (per kind of amount) across every planned recipe, scaled to the planned servings. */
-export function shoppingList(plans: Plan[], fridge: string[]): ShopItem[] {
-  const got = new Set(fridge);
+export function shoppingList(plans: Plan[], stock: string[]): ShopItem[] {
+  const got = new Set(stock);
   const acc = new Map<string, { ing: string; unit: Unit; qty: number; taste: boolean; recipes: Set<string> }>();
   for (const p of plans) {
     const r = recipeById(p.id);

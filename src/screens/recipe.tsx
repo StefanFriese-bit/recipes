@@ -4,7 +4,7 @@ import { recipeById } from '../data/recipes';
 import { lineText, swapText, swapsFor } from '../lib/lines';
 import { scaleLine } from '../lib/units';
 import {
-  addDays, addPlan, markCooked, removePlan, servesFor, setServes, today, toggleFavourite, toggleHidden,
+  addDays, addPlan, inStock, markCooked, removePlan, servesFor, setServes, today, toggleFavourite, toggleHidden,
 } from '../lib/store';
 import type { Line } from '../types';
 import { Empty, Meta, Sheet, go, useStore } from '../ui';
@@ -29,19 +29,19 @@ export function RecipeScreen({ id }: { id: string }) {
   const [swapLine, setSwapLine] = useState<Line | null>(null);
   const [planning, setPlanning] = useState(false);
   const [pick, setPick] = useState('');
-  if (!r) return <Empty>That recipe is not in the app any more. <a href="#/discover">Find another</a></Empty>;
+  if (!r) return <Empty>That recipe is not in the app any more. <a href="#/find">Find another</a></Empty>;
   const serves = servesFor(s, r.id);
   const f = serves / r.serves;
   const fav = s.favourites.includes(r.id);
   const hidden = s.hidden.includes(r.id);
   const plan = s.plans.find((p) => p.id === r.id);
-  const got = new Set(s.fridge);
+  const got = new Set(inStock(s));
   const cookedTimes = s.cooked.filter((c) => c.id === r.id).length;
   const doPlan = (date: string | null) => { addPlan({ id: r.id, date, serves }); setPlanning(false); };
 
   return (
     <div class="page recipe">
-      <button class="btn ghost back" onClick={() => (history.length > 1 ? history.back() : go('#/discover'))}>‹ Back</button>
+      <button class="btn ghost back" onClick={() => (history.length > 1 ? history.back() : go('#/find'))}>‹ Back</button>
       <h1>{r.title}</h1>
       <Meta r={r} />
       <p class="lead">{r.blurb}</p>
@@ -73,7 +73,7 @@ export function RecipeScreen({ id }: { id: string }) {
                 <span class="line-text">{lineText(sl)}</span>
                 {l.note && <span class="note">, {l.note}</span>}
                 {l.optional && <span class="tag">optional</span>}
-                {got.has(l.ing) && <span class="tag have-tag">in your fridge</span>}
+                {got.has(l.ing) && <span class="tag have-tag">in stock</span>}
               </div>
               {swaps.length > 0 && !staple && <button class="btn small" onClick={() => setSwapLine(sl)}>Swap</button>}
             </li>

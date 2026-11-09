@@ -1,8 +1,13 @@
+import { INGREDIENTS } from '../data/ingredients';
+
 // Everything the app remembers lives on the phone only (localStorage). A backup is one file the user saves to iCloud.
 export interface Plan { id: string; date: string | null; serves: number } // date YYYY-MM-DD, null = "some day"
+export type Place = 'pantry' | 'fridge' | 'freezer';
+/** Something the kitchen normally has. `out` = run out for now: stays on the list, not counted as there. */
+export interface StockItem { ing: string; place: Place; out?: boolean }
 export interface State {
-  v: 1;
-  fridge: string[];
+  v: 2;
+  stock: StockItem[];
   favourites: string[];
   hidden: string[]; // "I know this one" / "not for me": kept out of suggestions
   cooked: { id: string; date: string }[];
@@ -13,17 +18,22 @@ export interface State {
 }
 
 const KEY = 'recipes-state-v1';
-export const emptyState = (): State => ({ v: 1, fridge: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4 });
+export const emptyState = (): State => ({ v: 2, stock: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4 });
 
 /** Reads a stored or backed-up state, keeping only what it understands. Throws on something that is not ours. */
 export function parseState(text: string): State {
   const raw = JSON.parse(text);
-  if (!raw || raw.v !== 1) throw new Error('This is not a recipe app backup.');
+  if (!raw || (raw.v !== 1 && raw.v !== 2)) throw new Error('This is not a recipe app backup.');
   const base = emptyState();
   const arr = (x: unknown) => (Array.isArray(x) ? x.filter((s) => typeof s === 'string') : []);
   return {
-    v: 1,
-    fridge: arr(raw.fridge),
+    v: 2,
+    // Version 1 kept a plain "fridge" list: it becomes the stock list, each item in its usual place.
+    stock: raw.v === 1
+      ? arr(raw.fridge).map((ing) => ({ ing, place: defaultPlace(ing) }))
+      : (Array.isArray(raw.stock) ? raw.stock : [])
+        .filter((x: any) => x && typeof x.ing === 'string' && PLACES.includes(x.place))
+        .map((x: any) => (x.out ? { ing: x.ing, place: x.place, out: true } : { ing: x.ing, place: x.place })),
     favourites: arr(raw.favourites),
     hidden: arr(raw.hidden),
     cooked: Array.isArray(raw.cooked) ? raw.cooked.filter((c: any) => c && typeof c.id === 'string' && typeof c.date === 'string') : [],
@@ -34,6 +44,17 @@ export function parseState(text: string): State {
     serves: raw.serves && typeof raw.serves === 'object' ? Object.fromEntries(Object.entries(raw.serves).filter(([, n]) => typeof n === 'number' && n > 0)) as Record<string, number> : {},
     defaultServes: typeof raw.defaultServes === 'number' && raw.defaultServes > 0 ? raw.defaultServes : base.defaultServes,
   };
+}
+
+export const PLACES: Place[] = ['pantry', 'fridge', 'freezer'];
+// Kept out of the fridge even though they are fruit and veg.
+const DRY_VEG = new Set(['onion', 'red-onion', 'shallot', 'garlic', 'potato', 'sweet-potato', 'butternut', 'pumpkin', 'banana']);
+export function defaultPlace(ing: string): Place {
+  const a = INGREDIENTS[ing]?.aisle;
+  if (a === 'frozen') return 'freezer';
+  if (a === 'veg') return DRY_VEG.has(ing) ? 'pantry' : 'fridge';
+  if (a === 'dairy' || a === 'meat' || a === 'fish') return 'fridge';
+  return 'pantry';
 }
 
 let state: State = load();
@@ -58,8 +79,17 @@ export function subscribe(l: () => void) { listeners.add(l); return () => { list
 export function replaceState(s: State) { setState(() => s); }
 
 const toggle = (list: string[], id: string) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
-export const toggleFridge = (ing: string) => setState((s) => ({ ...s, fridge: toggle(s.fridge, ing) }));
-export const clearFridge = () => setState((s) => ({ ...s, fridge: [] }));
+/** Ingredient ids that are in the kitchen right now (on the stock list and not marked out). */
+export const inStock = (s: State): string[] => s.stock.filter((x) => !x.out).map((x) => x.ing);
+export const onList = (s: State, ing: string) => s.stock.some((x) => x.ing === ing);
+export const addStock = (ing: string, place: Place = defaultPlace(ing)) =>
+  setState((s) => (onList(s, ing) ? { ...s, stock: s.stock.map((x) => (x.ing === ing ? { ing, place: x.place } : x)) } : { ...s, stock: [...s.stock, { ing, place }] }));
+export const addManyStock = (ings: string[]) =>
+  setState((s) => ({ ...s, stock: [...s.stock, ...ings.filter((i) => !onList(s, i)).map((ing) => ({ ing, place: defaultPlace(ing) }))] }));
+export const removeStock = (ing: string) => setState((s) => ({ ...s, stock: s.stock.filter((x) => x.ing !== ing) }));
+export const toggleOut = (ing: string) => setState((s) => ({ ...s, stock: s.stock.map((x) => (x.ing === ing ? (x.out ? { ing, place: x.place } : { ...x, out: true }) : x)) }));
+export const moveStock = (ing: string, place: Place) => setState((s) => ({ ...s, stock: s.stock.map((x) => (x.ing === ing ? { ...x, place } : x)) }));
+export const allBackIn = () => setState((s) => ({ ...s, stock: s.stock.map((x) => ({ ing: x.ing, place: x.place })) }));
 export const toggleFavourite = (id: string) => setState((s) => ({ ...s, favourites: toggle(s.favourites, id) }));
 export const toggleHidden = (id: string) => setState((s) => ({ ...s, hidden: toggle(s.hidden, id) }));
 export const setServes = (id: string, n: number) => setState((s) => ({ ...s, serves: { ...s.serves, [id]: Math.max(1, Math.min(24, n)) } }));

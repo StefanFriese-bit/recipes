@@ -5,16 +5,30 @@ const noSideScroll = async (page: Page) => {
   expect(w).toBeLessThanOrEqual(0);
 };
 
-test('fridge: what you have -> recipe -> more people -> swap', async ({ page }, info) => {
-  await page.goto('./');
-  await expect(page.getByRole('heading', { name: 'What have you got?' })).toBeVisible();
-  for (const word of ['egg', 'greek', 'butter', 'chilli flakes', 'smoked paprika', 'garlic', 'sourdough']) {
-    await page.getByPlaceholder('Type an ingredient').fill(word);
+test('stock list: basics, add, run out, back in -> cook from stock -> recipe -> more people -> swap', async ({ page }, info) => {
+  await page.goto('./#/stock');
+  await page.getByRole('button', { name: 'Start with the usual basics' }).click();
+  await expect(page.getByText('34 in stock.')).toBeVisible();
+  for (const word of ['greek', 'sourdough']) {
+    await page.getByPlaceholder('Add an ingredient').fill(word);
     await page.locator('.chips .chip', { hasText: new RegExp(`^\\+ ${word}`, 'i') }).first().click();
   }
-  await expect(page.getByRole('heading', { name: 'In your fridge (7)' })).toBeVisible();
+  await expect(page.getByText('36 in stock.')).toBeVisible();
+  // eggs run out: stays on the list, Turkish eggs can't be made from stock
+  await page.locator('.stock li', { hasText: /^✓?\s*Egg/ }).locator('.stock-name').click();
+  await expect(page.getByText('35 in stock, 1 run out.')).toBeVisible();
+  await expect(page.locator('.stock li.out', { hasText: 'Egg' })).toContainText('run out');
   await noSideScroll(page);
-  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-fridge.png', fullPage: false });
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-stock.png' });
+  await page.getByRole('link', { name: 'Find a recipe from my stock' }).click();
+  await expect(page.getByRole('tab', { name: 'From my stock' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.card', { hasText: 'Turkish eggs' })).toHaveCount(0);
+  await page.goto('./#/stock');
+  await page.getByRole('button', { name: 'Back from the shops: all in' }).click();
+  await expect(page.getByText('36 in stock.')).toBeVisible();
+  await page.locator('.tabbar a', { hasText: 'Cook' }).click();
+  await page.getByRole('tab', { name: 'From my stock' }).click();
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-fromstock.png' });
   const card = page.locator('.card', { hasText: 'Turkish eggs' }).first();
   await expect(card).toContainText('Nothing to buy');
   await card.click();
@@ -71,14 +85,16 @@ test('plan two recipes, shopping list adds them up, ticks survive a reload', asy
   await expect(page.locator('.shop li', { hasText: '12 eggs' })).toHaveClass(/done/);
 });
 
-test('discover filters, surprise, cooking view, hide', async ({ page }, info) => {
-  await page.goto('./#/discover');
+test('free rein filters, surprise, cooking view, hide', async ({ page }, info) => {
+  await page.goto('./#/discover'); // the first version's address lands on Free rein
+  await expect(page.getByRole('tab', { name: 'Free rein' })).toHaveAttribute('aria-selected', 'true');
   await page.locator('.chip', { hasText: 'Weekend project' }).click();
   const n = await page.locator('.card').count();
   expect(n).toBeGreaterThan(10);
   for (const t of await page.locator('.card .meta').allTextContents()) expect(t).toContain('Weekend project');
+  for (const b of await page.locator('.card .badge').allTextContents()) expect(b).toMatch(/to buy/);
   await noSideScroll(page);
-  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-discover.png' });
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-free.png' });
   await page.getByRole('button', { name: 'Surprise me' }).click();
   await expect(page).toHaveURL(/#\/r\//);
   await page.goto('./#/r/pasta-norma');
@@ -91,7 +107,8 @@ test('discover filters, surprise, cooking view, hide', async ({ page }, info) =>
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-cook.png' });
   await page.goto('./#/r/pasta-norma');
   await page.getByRole('button', { name: 'I know this one' }).click();
-  await page.goto('./#/discover');
+  await page.goto('./#/find');
+  await page.getByRole('tab', { name: 'Free rein' }).click();
   await page.getByPlaceholder('Search: a dish').fill('norma');
   await expect(page.locator('.card')).toHaveCount(0);
 });

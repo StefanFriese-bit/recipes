@@ -52,6 +52,8 @@ export interface SwapPart {
 export interface Swap {
   parts: SwapPart[];
   note: string;
+  /** Only works in some dishes (egg for binding): shown on the recipe, never counted as "you can make it". */
+  limited?: boolean;
 }
 
 export interface Familiar {

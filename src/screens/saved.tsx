@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import { AISLE_NAMES } from '../data/ingredients';
 import { RECIPES, recipeById } from '../data/recipes';
 import { shoppingList } from '../lib/shopping';
-import { clearChecked, getState, parseState, removePlan, replaceState, toggleChecked, toggleHidden } from '../lib/store';
+import { clearChecked, getState, inStock, parseState, removePlan, replaceState, toggleChecked, toggleHidden } from '../lib/store';
 import type { Aisle } from '../types';
 import { Card, Empty, recipeHref, useStore } from '../ui';
 import { dayLabel } from './recipe';
@@ -35,7 +35,7 @@ export function SavedScreen() {
   const [tab, setTab] = useState<Tab>(() => (s.plans.length ? 'plan' : 'fav'));
   const [msg, setMsg] = useState('');
   const plans = [...s.plans].sort((a, b) => (a.date ?? '9999').localeCompare(b.date ?? '9999'));
-  const list = shoppingList(s.plans, s.fridge);
+  const list = shoppingList(s.plans, inStock(s));
   const toBuy = list.filter((i) => !i.inFridge);
   const have = list.filter((i) => i.inFridge);
   const aisles = [...new Set(toBuy.map((i) => i.aisle))] as Aisle[];
@@ -101,7 +101,7 @@ export function SavedScreen() {
             ))}
             {have.length > 0 && (
               <section>
-                <h3>You said you have these (check there is enough)</h3>
+                <h3>In your stock (check there is enough)</h3>
                 <ul class="shop muted">{have.map((i) => <li><span class="box">·</span><span class="item">{i.text}</span></li>)}</ul>
               </section>
             )}

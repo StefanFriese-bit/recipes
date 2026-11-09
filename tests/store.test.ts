@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { shoppingList } from '../src/lib/shopping';
-import { addDays, emptyState, parseState } from '../src/lib/store';
+import { addDays, emptyState, inStock, parseState } from '../src/lib/store';
 
 describe('backup file', () => {
   it('round-trips and drops what it does not understand', () => {
@@ -39,5 +39,21 @@ describe('shopping list', () => {
     const list = shoppingList([{ id: 'shakshuka', date: null, serves: 4 }], ['eggs']);
     expect(list.find((i) => i.ing === 'eggs')!.inFridge).toBe(true);
     expect(list.find((i) => i.ing === 'onion')!.inFridge).toBe(false);
+  });
+});
+
+describe('stock list', () => {
+  it('an old backup with a fridge list becomes the stock list, each item in its usual place', () => {
+    const old = { v: 1, fridge: ['eggs', 'onion', 'peas', 'rice'], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4 };
+    const s = parseState(JSON.stringify(old));
+    expect(s.v).toBe(2);
+    expect(s.stock).toEqual([
+      { ing: 'eggs', place: 'fridge' }, { ing: 'onion', place: 'pantry' }, { ing: 'peas', place: 'freezer' }, { ing: 'rice', place: 'pantry' },
+    ]);
+  });
+  it('an item marked out stays on the list but does not count as in stock', () => {
+    const s = parseState(JSON.stringify({ ...emptyState(), stock: [{ ing: 'eggs', place: 'fridge', out: true }, { ing: 'milk', place: 'fridge' }, { ing: 'x', place: 'garage' }] }));
+    expect(s.stock.length).toBe(2);
+    expect(inStock(s)).toEqual(['milk']);
   });
 });

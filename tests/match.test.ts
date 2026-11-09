@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FAMILIAR } from '../src/data/familiar';
-import { discover, findFamiliar, fridgeMatches, ingredientsInText, somethingDifferent, surprise } from '../src/lib/match';
+import { discover, findFamiliar, freeRein, fridgeMatches, ingredientsInText, somethingDifferent, surprise } from '../src/lib/match';
 
 describe('fridge', () => {
   it('nothing ticked = nothing suggested', () => {
@@ -20,6 +20,10 @@ describe('fridge', () => {
     const c = m.find((x) => x.recipe.id === 'cilbir')!;
     expect(c.missing).toEqual([]);
     expect(c.covered.map((x) => x.line.ing)).toEqual(['greek-yoghurt']);
+  });
+  it('a limited swap (yoghurt for egg) never makes a recipe count as makeable', () => {
+    const m = fridgeMatches(['greek-yoghurt', 'butter', 'chilli-flakes', 'smoked-paprika', 'garlic', 'sourdough'], [], 0);
+    expect(m.some((x) => x.recipe.id === 'cilbir')).toBe(false);
   });
   it('hidden recipes stay hidden', () => {
     const have = ['eggs', 'greek-yoghurt', 'butter', 'chilli-flakes', 'smoked-paprika', 'garlic', 'sourdough'];
@@ -67,5 +71,16 @@ describe('discover', () => {
       expect(r.id).not.toBe('cilbir');
       expect(r.course).not.toBe('side');
     }
+  });
+});
+
+describe('free rein', () => {
+  it('lists every recipe that fits the filters, each with what to buy given the stock', () => {
+    const all = freeRein({}, []);
+    expect(all.length).toBe(150);
+    const quick = freeRein({ maxMinutes: 30 }, ['eggs', 'greek-yoghurt', 'butter', 'chilli-flakes', 'smoked-paprika', 'garlic', 'sourdough']);
+    expect(quick.every((m) => m.recipe.minutes <= 30)).toBe(true);
+    expect(quick.find((m) => m.recipe.id === 'cilbir')!.missing).toEqual([]);
+    expect(quick.find((m) => m.recipe.id === 'cacio-e-pepe')!.missing.map((l) => l.ing)).toEqual(['spaghetti', 'parmesan']);
   });
 });

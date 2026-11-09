@@ -2,9 +2,9 @@
 
 A personal recipe app for the phone: new dishes to try, not the ones you already know.
 
-- **Fridge** – tick what you have; see recipes you can make now or with 1-3 things to buy, with swaps worked out.
+- **Stock** – what you normally keep in the pantry, fridge and freezer; tap an item when it runs out (it stays on the list), "all in" after shopping.
+- **Cook** – *From my stock*: recipes needing nothing beyond your stock (or up to 3 things to buy), with swaps worked out. *Free rein*: every recipe by time, effort, course and cuisine, each showing what you'd need to buy; or Surprise me.
 - **Something different** – type a dish you always make; get new dishes built on the same kind of ingredients.
-- **Discover** – browse by time, effort, course and cuisine, or press Surprise me.
 - **Recipe** – change the number of people and every amount follows; tap Swap on an ingredient for a stand-in with its amount; a step-by-step cooking view keeps the screen on.
 - **Saved** – favourites, a meal plan, a shopping list built from the plan, what you cooked, and a backup file.
 

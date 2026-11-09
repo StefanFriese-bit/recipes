@@ -127,3 +127,14 @@ input[type=search], input[type=date], select {
 .tabbar a { flex: 1; display: grid; justify-items: center; gap: 2px; padding: 8px 0 6px; color: var(--muted); text-decoration: none; font-size: .75rem; font-weight: 600; min-height: 56px; -webkit-tap-highlight-color: transparent; }
 .tabbar a.on { color: var(--accent); }
 .tabbar svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.segment { display: grid; grid-template-columns: 1fr 1fr; background: var(--soft); border-radius: 12px; padding: 4px; margin: 10px 0 6px; }
+.segment button { min-height: 44px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font: inherit; font-weight: 700; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.segment button.on { background: var(--card); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.btn.wide { width: 100%; margin-top: 20px; }
+.stock { list-style: none; padding: 0; margin: 0; }
+.stock li { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.stock-name { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 4px; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.stock .box { flex: 0 0 26px; height: 26px; border: 2px solid var(--good); border-radius: 8px; display: grid; place-items: center; color: var(--good); font-weight: 700; background: var(--good-soft); }
+.stock li.out .stock-name { color: var(--muted); }
+.stock li.out .box { border-color: var(--line); background: transparent; }

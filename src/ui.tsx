@@ -10,13 +10,15 @@ export function useStore(): State {
 }
 
 // ---- routing (hash) -------------------------------------------------------------------------------------------------
-export type Route = { name: 'fridge' | 'different' | 'discover' | 'saved' } | { name: 'recipe'; id: string } | { name: 'cook'; id: string };
+export type Route = { name: 'stock' | 'find' | 'free' | 'different' | 'saved' } | { name: 'recipe'; id: string } | { name: 'cook'; id: string };
 export function parseRoute(hash: string): Route {
   const [, a, b] = hash.replace(/^#/, '').split('/');
   if (a === 'r' && b) return { name: 'recipe', id: decodeURIComponent(b) };
   if (a === 'cook' && b) return { name: 'cook', id: decodeURIComponent(b) };
-  if (a === 'different' || a === 'discover' || a === 'saved' || a === 'fridge') return { name: a };
-  return { name: 'fridge' };
+  if (a === 'stock' || a === 'fridge') return { name: 'stock' }; // "fridge" = the first version's address
+  if (a === 'discover') return { name: 'free' }; // Discover became Find a recipe > Free rein
+  if (a === 'different' || a === 'saved' || a === 'find') return { name: a };
+  return { name: 'find' };
 }
 let current = parseRoute(location.hash);
 const routeListeners = new Set<() => void>();
