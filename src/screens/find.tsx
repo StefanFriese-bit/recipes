@@ -3,7 +3,7 @@ import { ingredient } from '../data/ingredients';
 import { lineText, swapText } from '../lib/lines';
 import { CUISINES, dietOf, freeRein, fridgeMatches, surprise, type Diet, type FridgeMatch, type Filters } from '../lib/match';
 import { inStock } from '../lib/store';
-import { Empty, FavStar, go, metaText, recipeHref, useStore } from '../ui';
+import { Cover, Empty, FavStar, go, metaText, recipeHref, useStore } from '../ui';
 
 type Mode = 'stock' | 'free';
 const keep = (k: string, v?: string) => { try { if (v === undefined) return sessionStorage.getItem(k) ?? ''; sessionStorage.setItem(k, v); } catch { /* private mode */ } return v ?? ''; };
@@ -32,10 +32,13 @@ function MatchCard({ m }: { m: FridgeMatch }) {
     <div class={`fold ${open ? 'open' : ''}`}>
       <div class="fold-head">
         <a class="fold-main" href={recipeHref(r.id)}>
-          <strong>{r.title}</strong>
-          <span class="fold-sub">
-            <span class="fold-meta">{metaText(r)}</span>
-            <span class={`badge ${buy === 0 ? 'none' : ''}`}>{buy === 0 ? 'All in stock' : `${buy} to buy`}</span>
+          <Cover r={r} />
+          <span class="fold-text">
+            <strong>{r.title}</strong>
+            <span class="fold-sub">
+              <span class="fold-meta">{metaText(r)}</span>
+              <span class={`badge ${buy === 0 ? 'none' : ''}`}>{buy === 0 ? 'All in stock' : `${buy} to buy`}</span>
+            </span>
           </span>
         </a>
         <FavStar r={r} />
@@ -71,7 +74,7 @@ export function FindScreen({ start }: { start?: Mode }) {
   const free = useMemo(() => (mode === 'free' ? freeRein(f, have, s.hidden) : []), [mode, f, s.stock, s.hidden]);
 
   return (
-    <div class="page">
+    <div class="page find">
       <h1>Find a recipe</h1>
       <div class="segment" role="tablist">
         <button role="tab" aria-selected={mode === 'stock'} class={mode === 'stock' ? 'on' : ''} onClick={() => setMode('stock')}>From my stock</button>
@@ -103,7 +106,7 @@ export function FindScreen({ start }: { start?: Mode }) {
         <>
           <div class="row-between">
             <p class="small">Anything goes: pick something new and shop for it. Each recipe shows what you'd need to buy.</p>
-            <button class="btn primary" onClick={() => { const r = surprise(s.hidden); if (r) go(recipeHref(r.id)); }}>Surprise me</button>
+            <button class="btn primary small" onClick={() => { const r = surprise(s.hidden); if (r) go(recipeHref(r.id)); }}>🎲 Surprise me</button>
           </div>
           <input type="search" placeholder="Search: a dish, a country, an ingredient" value={f.text ?? ''} onInput={(e) => upd({ text: (e.target as HTMLInputElement).value })} />
           <div class="chips">

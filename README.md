@@ -21,3 +21,10 @@ A push to `main` runs the checks and publishes to GitHub Pages.
 - `src/lib/import-parse.ts`: text → title, serves, time, ingredient lines, steps (drops Facebook/Instagram screen furniture); each line → amount, unit (cups, oz/lb → g), its own words, and the app ingredient it ends on ("cream crackers" is not cream). Unknown ones get `own:<name>`, the same id as an own item on the stock list.
 - Imported recipes live in the state (`imported`) and are merged into the recipe list at load (`src/lib/imported.ts`): servings (open at their own amount), stock matching, shopping list (unknowns under "Other"), plan, cooking view, favourites. Pictures in IndexedDB as bytes (`src/lib/photos.ts`) and inside the backup file.
 - Favourites: a ☆ on every recipe in every list (one tap), listed under Saved ▸ Favourites.
+
+## Look (refreshed 10/11/2026)
+- Every recipe has a "cover": a dish emoji on a colour wash, one colour family per cuisine (`src/lib/cover.ts`); an imported recipe with a picture shows its photo.
+- Recipe page: picture header with Start cooking, fact pills, servings beside Ingredients, tap an ingredient or a step to tick it off (for that visit only).
+- Cooking view: progress bar; times named in a step ("30–35 minutes") are tap-to-start timers that keep running across steps and beep + vibrate when done (`src/lib/timers.ts`; lost if you leave the cooking view); "For this step" lists the ingredients the step mentions.
+- Softer cards with shadows instead of lines, rounded headings, sideways-scrolling filters on Cook, solid tab bar, dark mode to match.
+- Before/after pictures: `SHOTS_TAG=after npx playwright test e2e/shots.spec.ts --project=iphone-safari-engine` (off in normal test runs).

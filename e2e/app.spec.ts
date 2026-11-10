@@ -185,7 +185,7 @@ test('free rein filters, surprise, cooking view, hide', async ({ page }, info) =
   await expect(page).toHaveURL(/#\/r\//);
   await page.goto('./#/r/pasta-norma');
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-recipe.png', fullPage: true });
-  await page.getByRole('link', { name: 'Start cooking' }).click();
+  await page.getByRole('link', { name: 'Start cooking' }).first().click();
   await expect(page.locator('.step-count')).toHaveText('Step 1 of 8');
   await page.getByRole('button', { name: 'Next step' }).click();
   await expect(page.locator('.step-count')).toHaveText('Step 2 of 8');
@@ -256,7 +256,7 @@ test('import from pasted text: sorted into a recipe, scales, favourite, in the I
   if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-import-form.png', fullPage: true });
   await page.getByRole('button', { name: 'Save to my imports' }).click();
   await expect(page.getByRole('heading', { name: 'Creamy Garlic Butter Chicken' })).toBeVisible();
-  await expect(page.locator('.meta')).toHaveText('Your import · 35 min');
+  await expect(page.locator('.facts')).toHaveText(/35 min.*Your import/);
   await expect(page.locator('.lines li', { hasText: '6 garlic cloves, minced' })).toBeVisible();
   await page.getByRole('button', { name: 'More people' }).click();
   await page.getByRole('button', { name: 'More people' }).click();
@@ -349,4 +349,36 @@ test('the picture reader works with no signal once it has been used', async ({ p
   await context.setOffline(true);
   await page.reload();
   await pick(); // no signal: from the phone's copy
+});
+
+test('recipe page: tick off ingredients and steps; cooking view: timer from the step, what the step needs', async ({ page }, info) => {
+  await page.clock.install();
+  await page.goto('./#/r/lentil-bolognese');
+  const oil = page.locator('.lines li', { hasText: 'olive oil' });
+  await oil.click();
+  await expect(oil).toHaveClass(/ticked/);
+  await oil.click();
+  await expect(oil).not.toHaveClass(/ticked/);
+  // Swap opens its sheet without ticking the line
+  const tom = page.locator('.lines li', { hasText: 'chopped tomatoes' });
+  await tom.getByRole('button', { name: 'Swap' }).click();
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(tom).not.toHaveClass(/ticked/);
+  await page.locator('.method li').first().click();
+  await expect(page.locator('.method li').first()).toHaveClass(/done/);
+  await page.locator('.hero-cook').click();
+  await page.getByRole('button', { name: 'Next step' }).click();
+  await expect(page.locator('.step-ings')).toContainText('250 g brown mushrooms');
+  await page.getByRole('button', { name: 'Start a 8 minutes timer' }).click();
+  await expect(page.locator('.timer')).toContainText('8:00');
+  await page.clock.runFor(61_000);
+  await expect(page.locator('.timer')).toContainText('6:59');
+  // keeps running on the next step
+  await page.getByRole('button', { name: 'Next step' }).click();
+  await expect(page.locator('.step-ings')).toContainText('150 g green or brown lentils');
+  await page.clock.runFor(8 * 60_000);
+  await expect(page.locator('.timer')).toContainText('Done!');
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-timer.png' });
+  await page.locator('.timer').click({ force: true }); // it pulses when done, which a test calls 'not stable'
+  await expect(page.locator('.timer')).toHaveCount(0);
 });

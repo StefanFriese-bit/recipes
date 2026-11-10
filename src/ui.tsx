@@ -1,6 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import type { Recipe } from './types';
+import { coverEmoji, coverHue } from './lib/cover';
 import { getState, subscribe, toggleFavourite, type State } from './lib/store';
 
 export function useStore(): State {
@@ -73,17 +74,29 @@ export function FavStar({ r }: { r: Recipe }) {
   );
 }
 
+/** The recipe's picture: a dish emoji on a colour wash (one colour family per cuisine), or its own photo. */
+export function Cover({ r, size = 'sm', photo }: { r: Recipe; size?: 'sm' | 'md' | 'hero'; photo?: string }) {
+  return (
+    <div class={`cover cover-${size}`} style={`--h:${coverHue(r)}`} aria-hidden="true">
+      {photo ? <img src={photo} alt="" /> : <span>{coverEmoji(r)}</span>}
+    </div>
+  );
+}
+
 export function Card({ r, children, badge }: { r: Recipe; children?: ComponentChildren; badge?: string }) {
   return (
     <div class="card-wrap">
       <a class="card" href={recipeHref(r.id)}>
-        <div class="card-top">
-          <strong>{r.title}</strong>
+        <Cover r={r} size="md" />
+        <div class="card-text">
+          <div class="card-top">
+            <strong>{r.title}</strong>
+          </div>
+          <Meta r={r} />
+          {badge && <span class="badge">{badge}</span>}
+          {r.blurb && <p class="blurb">{r.blurb}</p>}
+          {children}
         </div>
-        <Meta r={r} />
-        {badge && <span class="badge">{badge}</span>}
-        {r.blurb && <p class="blurb">{r.blurb}</p>}
-        {children}
       </a>
       <FavStar r={r} />
     </div>
@@ -99,6 +112,7 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   return (
     <div class="sheet-back" onClick={onClose}>
       <div class="sheet" role="dialog" aria-label={title} onClick={(e) => e.stopPropagation()}>
+        <div class="sheet-grip" aria-hidden="true" />
         <div class="sheet-head">
           <h2>{title}</h2>
           <button class="btn ghost" onClick={onClose}>Close</button>

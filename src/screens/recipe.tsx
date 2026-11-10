@@ -8,7 +8,7 @@ import {
   addDays, addPlan, inStock, markCooked, removePlan, servesFor, setMeatEaters, setServes, today, toggleFavourite, toggleHidden,
 } from '../lib/store';
 import type { Line } from '../types';
-import { Empty, Meta, Sheet, go, useStore } from '../ui';
+import { Cover, EFFORT, Empty, Sheet, go, minutes, useStore } from '../ui';
 
 function nextDay(weekday: number): string {
   const d = new Date();
@@ -50,6 +50,10 @@ export function RecipeScreen({ id }: { id: string }) {
   const imp = s.imported.find((x) => x.id === id);
   const photos = usePhotoUrls(id, imp?.photos ?? 0);
   const [bigPhoto, setBigPhoto] = useState<string | null>(null);
+  // Ticked ingredients and finished steps: just for this visit, like crossing off on paper.
+  const [ticked, setTicked] = useState<Set<number>>(new Set());
+  const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
+  const flip = (set: Set<number>, i: number) => { const n = new Set(set); if (n.has(i)) n.delete(i); else n.add(i); return n; };
   if (!r) return <Empty>That recipe is not in the app any more. <a href="#/find">Find another</a></Empty>;
   const serves = servesFor(s, r.id);
   const f = serves / r.serves;
@@ -63,10 +67,26 @@ export function RecipeScreen({ id }: { id: string }) {
 
   return (
     <div class="page recipe">
-      <button class="btn ghost back" onClick={() => (history.length > 1 ? history.back() : go('#/find'))}>‹ Back</button>
-      <h1>{r.title}</h1>
-      <Meta r={r} />
-      <p class="lead">{r.blurb}</p>
+      <div class="hero-wrap">
+        <Cover r={r} size="hero" photo={photos[0]} />
+        <button class="round-back" aria-label="Back" onClick={() => (history.length > 1 ? history.back() : go('#/find'))}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        {r.steps.length > 0 && (
+          <a class="btn primary hero-cook" href={`#/cook/${encodeURIComponent(r.id)}`}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+            Start cooking
+          </a>
+        )}
+      </div>
+      <h1 class="recipe-title">{r.title}</h1>
+      <div class="facts">
+        {r.minutes > 0 && <span class="fact"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2.5 2.5M9 2h6" /></svg>{minutes(r.minutes)}</span>}
+        {!isImported(r) && <span class="fact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14a6 6 0 1 1 12 0v6H6zM6 17h12" /></svg>{EFFORT[r.effort]}</span>}
+        <span class="fact">{isImported(r) ? 'Your import' : r.cuisine}</span>
+        {r.tags.includes('vegetarian') && <span class="fact veg">Veg</span>}
+      </div>
+      {r.blurb && <p class="lead">{r.blurb}</p>}
 
       <div class="actions">
         <button class={`btn ${fav ? 'on' : ''}`} aria-pressed={fav} onClick={() => toggleFavourite(r.id)}>{fav ? '★ Favourite' : '☆ Favourite'}</button>
@@ -77,29 +97,30 @@ export function RecipeScreen({ id }: { id: string }) {
       </div>
       {cookedTimes > 0 && <p class="small">You have cooked this {cookedTimes === 1 ? 'once' : `${cookedTimes} times`}.</p>}
 
-      <div class="serves">
-        <span>For</span>
-        <button class="btn round" aria-label="Fewer people" onClick={() => setServes(r.id, serves - 1)}>−</button>
-        <strong>{serves}</strong>
-        <button class="btn round" aria-label="More people" onClick={() => setServes(r.id, serves + 1)}>+</button>
-        <span>{serves === 1 ? 'person' : 'people'}</span>
+      <div class="section-head">
+        <h2>Ingredients</h2>
+        <div class="serves">
+          <button class="btn round" aria-label="Fewer people" onClick={() => setServes(r.id, serves - 1)}>−</button>
+          <span class="serves-n"><strong>{serves}</strong> {serves === 1 ? 'person' : 'people'}</span>
+          <button class="btn round" aria-label="More people" onClick={() => setServes(r.id, serves + 1)}>+</button>
+        </div>
       </div>
-
-      <h2>Ingredients</h2>
+      <p class="small hint">Tap an ingredient to tick it off as you get it out.</p>
       <ul class="lines">
-        {r.lines.map((l) => {
+        {r.lines.map((l, i) => {
           const sl = scaleLine(l, f);
           const swaps = swapsFor(l.ing);
           const staple = ingredient(l.ing).staple;
           return (
-            <li class={got.has(l.ing) ? 'have' : ''}>
-              <div>
+            <li class={`${got.has(l.ing) ? 'have' : ''} ${ticked.has(i) ? 'ticked' : ''}`} onClick={() => setTicked(flip(ticked, i))}>
+              <span class="tick" aria-hidden="true">{ticked.has(i) ? '✓' : ''}</span>
+              <div class="line-body">
                 <span class="line-text">{lineText(sl)}</span>
                 {l.note && <span class="note">, {l.note}</span>}
                 {l.optional && <span class="tag">optional</span>}
                 {got.has(l.ing) && <span class="tag have-tag">in stock</span>}
               </div>
-              {swaps.length > 0 && !staple && <button class="btn small" onClick={() => setSwapLine(sl)}>Swap</button>}
+              {swaps.length > 0 && !staple && <button class="btn small" onClick={(e) => { e.stopPropagation(); setSwapLine(sl); }}>Swap</button>}
             </li>
           );
         })}
@@ -139,7 +160,11 @@ export function RecipeScreen({ id }: { id: string }) {
 
       <h2>Method</h2>
       {r.steps.length === 0 && <p class="small">No method yet. <a href={`#/import/${encodeURIComponent(r.id)}`}>Add it</a>.</p>}
-      <ol class="steps">{r.steps.map((st) => <li>{st}</li>)}</ol>
+      <ol class="steps method">{r.steps.map((st, i) => (
+        <li class={doneSteps.has(i) ? 'done' : ''} onClick={() => setDoneSteps(flip(doneSteps, i))}>
+          <span class="step-n" aria-hidden="true">{doneSteps.has(i) ? '✓' : i + 1}</span><span>{st}</span>
+        </li>
+      ))}</ol>
       {imp && (
         <>
           {imp.notes && <p class="tip"><strong>Notes:</strong> {imp.notes}</p>}
