@@ -97,7 +97,7 @@ export function StockScreen() {
 
       {item && (
         <Sheet title={cap(stockName(item))} onClose={() => setEditing(null)}>
-          {isOwn(item.ing) && <p class="small">You added this yourself. It stays on your list, but none of the recipes use it yet, so it does not change what the app suggests.</p>}
+          {isOwn(item.ing) && <p class="small">You added this yourself. It stays on your list. The app's own recipes don't use it, but an imported recipe that names it counts it as in stock.</p>}
           <p class="small">Where do you keep it?</p>
           <div class="chips">
             {PLACES.map((p) => <button class={`chip ${item.place === p ? 'on' : ''}`} onClick={() => moveStock(item.ing, p)}>{PLACE_NAMES[p]}</button>)}

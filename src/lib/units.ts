@@ -3,9 +3,9 @@ import type { Line, Unit } from '../types';
 export type Family = 'mass' | 'volume' | 'count';
 const BASE: Partial<Record<Unit, [Family, number]>> = {
   g: ['mass', 1], kg: ['mass', 1000],
-  ml: ['volume', 1], l: ['volume', 1000], tsp: ['volume', 5], tbsp: ['volume', 15],
+  ml: ['volume', 1], l: ['volume', 1000], tsp: ['volume', 5], tbsp: ['volume', 15], cup: ['volume', 250],
 };
-export const UNITS: Unit[] = ['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'pc', 'clove', 'tin', 'bunch', 'handful', 'pinch', 'slice', 'sprig', 'sheet', 'stalk', 'cm', 'taste'];
+export const UNITS: Unit[] = ['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'pc', 'clove', 'tin', 'bunch', 'handful', 'pinch', 'slice', 'sprig', 'sheet', 'stalk', 'cm', 'taste'];
 export const family = (u: Unit): Family => BASE[u]?.[0] ?? 'count';
 export const toBase = (qty: number, u: Unit): number => qty * (BASE[u]?.[1] ?? 1);
 /** Converts between units of one family; null when the families differ. */
@@ -100,6 +100,7 @@ export function formatAmount(qty: number, unit: Unit): string {
     if (qty < 1 / 3 - 0.01) return formatAmount(qty * 3, 'tsp');
     return `${fraction(qty)} tbsp`;
   }
+  if (unit === 'cup') return `${fraction(qty)} ${qty > 1 + 1e-9 ? 'cups' : 'cup'}`;
   if (unit === 'pinch') {
     const n = Math.max(1, Math.round(qty));
     return `${n} ${n === 1 ? 'pinch' : 'pinches'}`;

@@ -79,7 +79,7 @@ test('add your own ingredient that is not on the list', async ({ page }, info) =
   await row.locator('.stock-name').click();
   await expect(row).toContainText('run out');
   await row.getByRole('button', { name: 'Change Biltong' }).click();
-  await expect(page.getByRole('dialog')).toContainText('none of the recipes use it yet');
+  await expect(page.getByRole('dialog')).toContainText("The app's own recipes don't use it");
   await page.getByRole('dialog').getByRole('button', { name: 'Fridge' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Back in stock' }).click();
   await page.reload();
@@ -209,4 +209,144 @@ test('works with no signal once opened', async ({ page, context }, info) => {
   await page.goto('./#/r/pho');
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Beef pho' })).toBeVisible();
+});
+
+test('favourite star on a list row: one tap, shows under Saved > Favourites', async ({ page }) => {
+  await page.goto('./#/discover');
+  const row = page.locator('.fold').first();
+  const title = (await row.locator('.fold-main strong').textContent())!;
+  await row.getByRole('button', { name: `Add ${title} to favourites` }).click();
+  await expect(row.getByRole('button', { name: `Take ${title} off favourites` })).toHaveAttribute('aria-pressed', 'true');
+  await page.goto('./#/saved');
+  await page.locator('.chip', { hasText: 'Favourites (1)' }).click();
+  await expect(page.locator('.card', { hasText: title })).toBeVisible();
+  // and off again from the card's own star
+  await page.getByRole('button', { name: `Take ${title} off favourites` }).click();
+  await expect(page.locator('.chip', { hasText: 'Favourites (0)' })).toBeVisible();
+});
+
+const FB = `Tasty Home Cooking · Follow
+Creamy Garlic Butter Chicken
+Serves 4 | Prep 10 min | Cook 25 min
+Ingredients:
+• 4 chicken breasts
+• 3 tbsp butter
+• 6 garlic cloves, minced
+• 1 cup heavy cream
+• 1 tsp liquid smoke
+Instructions:
+1. Fry the chicken 6-7 minutes per side.
+2. Melt the butter, add the garlic, then the cream. Return the chicken.
+1.2K Likes
+Share`;
+
+test('import from pasted text: sorted into a recipe, scales, favourite, in the Imports list', async ({ page }, info) => {
+  await page.goto('./#/imports');
+  await expect(page.getByText('Nothing imported yet.')).toBeVisible();
+  await page.getByRole('link', { name: '+ Add a recipe from a picture' }).click();
+  await page.getByRole('button', { name: 'Paste text instead' }).click();
+  await page.getByPlaceholder('Paste the recipe here').fill(FB);
+  await page.getByRole('button', { name: 'Sort it into a recipe' }).click();
+  await expect(page.getByLabel('Name')).toHaveValue('Creamy Garlic Butter Chicken');
+  await expect(page.getByLabel('Minutes (if known)')).toHaveValue('35');
+  await expect(page.getByLabel('Ingredients: one per line, amount first')).toHaveValue('4 chicken breasts\n3 tbsp butter\n6 garlic cloves, minced\n1 cup heavy cream\n1 tsp liquid smoke');
+  await page.locator('.understood summary').click();
+  await expect(page.locator('.understood summary')).toContainText('4 of 5 it knows');
+  await noSideScroll(page);
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-import-form.png', fullPage: true });
+  await page.getByRole('button', { name: 'Save to my imports' }).click();
+  await expect(page.getByRole('heading', { name: 'Creamy Garlic Butter Chicken' })).toBeVisible();
+  await expect(page.locator('.meta')).toHaveText('Your import · 35 min');
+  await expect(page.locator('.lines li', { hasText: '6 garlic cloves, minced' })).toBeVisible();
+  await page.getByRole('button', { name: 'More people' }).click();
+  await page.getByRole('button', { name: 'More people' }).click();
+  await page.getByRole('button', { name: 'More people' }).click();
+  await page.getByRole('button', { name: 'More people' }).click();
+  await expect(page.locator('.lines li', { hasText: '8 chicken breasts' })).toBeVisible();
+  await expect(page.locator('.lines li', { hasText: '2 cups heavy cream' })).toBeVisible();
+  await page.getByRole('button', { name: '☆ Favourite' }).click();
+  await expect(page.getByRole('button', { name: '★ Favourite' })).toBeVisible();
+  await expect(page.locator('.steps li')).toHaveCount(2);
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-import-recipe.png', fullPage: true });
+  // it survives a reload, sits in Imports with its star on, and can be changed
+  await page.reload();
+  await page.locator('.tabbar a', { hasText: 'Imports' }).click();
+  const card = page.locator('.card-wrap', { hasText: 'Creamy Garlic Butter Chicken' });
+  await expect(card.locator('.fav-star')).toHaveAttribute('aria-pressed', 'true');
+  await card.locator('.card').click();
+  await page.getByRole('link', { name: 'Change it' }).click();
+  await page.getByLabel('Name').fill('Garlic butter chicken');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByRole('heading', { name: 'Garlic butter chicken' })).toBeVisible();
+  // planned, it goes on the shopping list: the new thing under Other
+  await page.getByRole('button', { name: 'Plan it' }).click();
+  await page.getByRole('button', { name: 'Tomorrow' }).click();
+  await page.goto('./#/saved');
+  await page.locator('.chip', { hasText: 'Shopping' }).click();
+  await expect(page.locator('section', { hasText: 'Other' }).locator('.shop li', { hasText: 'liquid smoke' })).toBeVisible();
+  // deleted: gone from imports, favourites and the plan
+  await page.goto('./#/imports');
+  await page.locator('.card', { hasText: 'Garlic butter chicken' }).click();
+  await page.getByRole('link', { name: 'Change it' }).click();
+  page.once('dialog', (d) => d.accept());
+  await page.getByRole('button', { name: 'Delete this recipe' }).click();
+  await expect(page.getByText('Nothing imported yet.')).toBeVisible();
+  await expect(page.locator('.tabbar')).toContainText('Saved');
+  await expect(page.locator('.tabbar')).not.toContainText('Saved (1)');
+});
+
+// A "screenshot" drawn in the browser: a recipe in plain type, as a phone would show it.
+const drawRecipe = (page: Page) => page.evaluate(() => {
+    const c = document.createElement('canvas');
+    c.width = 900; c.height = 1100;
+    const g = c.getContext('2d')!;
+    g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+    g.fillStyle = '#111';
+    const rows = ['Banana Oat Muffins', '', 'Makes 12', '', 'Ingredients', '2 ripe bananas', '200 g plain flour', '100 g oats', '2 eggs', '120 ml milk', '',
+      'Method', '1. Mash the bananas and mix in the eggs and milk.', '2. Stir in the flour and oats.', '3. Bake for 20 minutes at 180 C.'];
+    let y = 70;
+    for (const r of rows) { g.font = r === 'Banana Oat Muffins' ? 'bold 48px Arial' : '34px Arial'; g.fillText(r, 50, y); y += r ? 58 : 30; }
+    return c.toDataURL('image/png').split(',')[1];
+  });
+
+test('import from a picture: the phone reads the words off it', async ({ page }, info) => {
+  test.setTimeout(150_000);
+  await page.goto('./#/imports');
+  const png = await drawRecipe(page);
+  await page.getByRole('link', { name: '+ Add a recipe from a picture' }).click();
+  await page.locator('input[type=file]').setInputFiles({ name: 'screenshot.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+  await expect(page.getByLabel('Name')).toHaveValue('Banana Oat Muffins', { timeout: 120_000 });
+  await expect(page.getByLabel('Serves')).toHaveValue('12');
+  const ings = await page.getByLabel('Ingredients: one per line, amount first').inputValue();
+  expect(ings).toContain('200 g plain flour');
+  expect(ings).toContain('2 eggs');
+  expect((await page.getByLabel('Method: one step per line').inputValue()).split('\n')).toHaveLength(3);
+  await expect(page.locator('.thumbs img')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Save to my imports' }).click();
+  await expect(page.getByRole('heading', { name: 'Banana Oat Muffins' })).toBeVisible();
+  // it opens at its own amount (makes 12), not scaled to the usual 4
+  await expect(page.locator('.serves strong').first()).toHaveText('12');
+  await expect(page.locator('.lines li', { hasText: '2 ripe bananas' })).toBeVisible();
+  // the picture is kept with the recipe
+  await expect(page.getByRole('heading', { name: 'The original picture' })).toBeVisible();
+  await expect(page.locator('.thumbs img')).toHaveCount(1);
+  if (info.project.name.startsWith('iphone')) await page.screenshot({ path: 'test-results/shot-import-picture.png', fullPage: true });
+});
+
+test('the picture reader works with no signal once it has been used', async ({ page, context }, info) => {
+  test.skip(info.project.name.startsWith('iphone'), 'offline emulation not supported by the WebKit test engine');
+  test.setTimeout(150_000);
+  await page.goto('./#/imports');
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await page.reload(); // now the service worker looks after the page
+  const png = await drawRecipe(page);
+  const pick = async () => {
+    await page.goto('./#/import/new');
+    await page.locator('input[type=file]').setInputFiles({ name: 'screenshot.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+    await expect(page.getByLabel('Name')).toHaveValue('Banana Oat Muffins', { timeout: 120_000 });
+  };
+  await pick(); // first time: fetches the reader
+  await context.setOffline(true);
+  await page.reload();
+  await pick(); // no signal: from the phone's copy
 });

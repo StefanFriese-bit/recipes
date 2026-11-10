@@ -14,3 +14,10 @@ Install: open the address in Safari → Share → Add to Home Screen.
 
 Develop: `npm ci`, `npm run dev`. Checks: `npm run typecheck && npm test && npm run build && npm run e2e`.
 A push to `main` runs the checks and publishes to GitHub Pages.
+
+## Imports (10/11/2026)
+- **Imports tab**: add a recipe from screenshots/photos (several at once, in order), pasted text, or typed in. The draft is shown to check and fix before saving.
+- Pictures are read **on the phone** by Tesseract (`src/lib/ocr.ts`), free, nothing sent anywhere. Its files (~7 MB: worker, core, English `best_int`) are copied into `public/ocr/` by `scripts/copy-ocr.mjs` before every dev/build, kept out of the first download, and cached by the service worker on first use (offline after that; tested).
+- `src/lib/import-parse.ts`: text → title, serves, time, ingredient lines, steps (drops Facebook/Instagram screen furniture); each line → amount, unit (cups, oz/lb → g), its own words, and the app ingredient it ends on ("cream crackers" is not cream). Unknown ones get `own:<name>`, the same id as an own item on the stock list.
+- Imported recipes live in the state (`imported`) and are merged into the recipe list at load (`src/lib/imported.ts`): servings (open at their own amount), stock matching, shopping list (unknowns under "Other"), plan, cooking view, favourites. Pictures in IndexedDB as bytes (`src/lib/photos.ts`) and inside the backup file.
+- Favourites: a ☆ on every recipe in every list (one tap), listed under Saved ▸ Favourites.

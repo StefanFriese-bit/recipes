@@ -277,7 +277,7 @@ dried-chillies|dried chillies|spice|dried chillies
 const AISLES: Aisle[] = ['veg', 'meat', 'fish', 'dairy', 'bakery', 'pantry', 'spice', 'world', 'frozen'];
 export const AISLE_NAMES: Record<Aisle, string> = {
   veg: 'Fruit, veg & herbs', meat: 'Meat', fish: 'Fish', dairy: 'Dairy & eggs', bakery: 'Bread',
-  pantry: 'Cupboard', spice: 'Spices', world: 'World foods', frozen: 'Frozen',
+  pantry: 'Cupboard', spice: 'Spices', world: 'World foods', frozen: 'Frozen', other: 'Other',
 };
 
 export const INGREDIENTS: Record<string, Ingredient> = {};
@@ -287,8 +287,17 @@ for (const raw of SRC.trim().split('\n')) {
   if (INGREDIENTS[id]) throw new Error(`Ingredient ${id} twice`);
   INGREDIENTS[id] = { id, name, aisle: aisle as Aisle, plural: plural || `${name}s`, staple: s === 's' };
 }
+/**
+ * Ingredients only your imported recipes use (ids start with "own:"). Kept apart from the list above, so the stock
+ * search and the library's own checks never see them. Rebuilt whenever the imports change (src/lib/imported.ts).
+ */
+export const EXTRA_INGREDIENTS: Record<string, Ingredient> = {};
+export function setExtraIngredients(list: Ingredient[]) {
+  for (const k of Object.keys(EXTRA_INGREDIENTS)) delete EXTRA_INGREDIENTS[k];
+  for (const i of list) EXTRA_INGREDIENTS[i.id] = i;
+}
 export const ingredient = (id: string): Ingredient => {
-  const i = INGREDIENTS[id];
+  const i = INGREDIENTS[id] ?? EXTRA_INGREDIENTS[id];
   if (!i) throw new Error(`Unknown ingredient ${id}`);
   return i;
 };

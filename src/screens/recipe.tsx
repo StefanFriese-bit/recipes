@@ -1,6 +1,7 @@
-import { useState } from 'preact/hooks';
-import { INGREDIENTS } from '../data/ingredients';
-import { recipeById } from '../data/recipes';
+import { useEffect, useState } from 'preact/hooks';
+import { INGREDIENTS, ingredient } from '../data/ingredients';
+import { isImported, recipeById } from '../data/recipes';
+import { getPhotos } from '../lib/photos';
 import { lineText, swapText, swapsFor } from '../lib/lines';
 import { scaleLine } from '../lib/units';
 import {
@@ -23,12 +24,32 @@ export function dayLabel(iso: string | null): string {
   return new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
+/** The kept pictures of an imported recipe, as addresses the page can show (freed when it closes). */
+function usePhotoUrls(id: string, count: number): string[] {
+  const [urls, set] = useState<string[]>([]);
+  useEffect(() => {
+    if (!count) { set([]); return; }
+    let made: string[] = [];
+    let gone = false;
+    void getPhotos(id, count).then((blobs) => {
+      if (gone) return;
+      made = blobs.map((b) => URL.createObjectURL(b));
+      set(made);
+    });
+    return () => { gone = true; made.forEach((u) => URL.revokeObjectURL(u)); };
+  }, [id, count]);
+  return urls;
+}
+
 export function RecipeScreen({ id }: { id: string }) {
   const s = useStore();
   const r = recipeById(id);
   const [swapLine, setSwapLine] = useState<Line | null>(null);
   const [planning, setPlanning] = useState(false);
   const [pick, setPick] = useState('');
+  const imp = s.imported.find((x) => x.id === id);
+  const photos = usePhotoUrls(id, imp?.photos ?? 0);
+  const [bigPhoto, setBigPhoto] = useState<string | null>(null);
   if (!r) return <Empty>That recipe is not in the app any more. <a href="#/find">Find another</a></Empty>;
   const serves = servesFor(s, r.id);
   const f = serves / r.serves;
@@ -48,9 +69,11 @@ export function RecipeScreen({ id }: { id: string }) {
       <p class="lead">{r.blurb}</p>
 
       <div class="actions">
-        <button class={`btn ${fav ? 'on' : ''}`} onClick={() => toggleFavourite(r.id)}>{fav ? '★ Saved' : '☆ Save'}</button>
+        <button class={`btn ${fav ? 'on' : ''}`} aria-pressed={fav} onClick={() => toggleFavourite(r.id)}>{fav ? '★ Favourite' : '☆ Favourite'}</button>
         <button class={`btn ${plan ? 'on' : ''}`} onClick={() => setPlanning(true)}>{plan ? `Planned: ${dayLabel(plan.date)}` : 'Plan it'}</button>
-        <button class={`btn ${hidden ? 'on' : ''}`} onClick={() => toggleHidden(r.id)}>{hidden ? 'Hidden — show again' : 'I know this one'}</button>
+        {isImported(r)
+          ? <a class="btn" href={`#/import/${encodeURIComponent(r.id)}`}>Change it</a>
+          : <button class={`btn ${hidden ? 'on' : ''}`} onClick={() => toggleHidden(r.id)}>{hidden ? 'Hidden — show again' : 'I know this one'}</button>}
       </div>
       {cookedTimes > 0 && <p class="small">You have cooked this {cookedTimes === 1 ? 'once' : `${cookedTimes} times`}.</p>}
 
@@ -67,7 +90,7 @@ export function RecipeScreen({ id }: { id: string }) {
         {r.lines.map((l) => {
           const sl = scaleLine(l, f);
           const swaps = swapsFor(l.ing);
-          const staple = INGREDIENTS[l.ing].staple;
+          const staple = ingredient(l.ing).staple;
           return (
             <li class={got.has(l.ing) ? 'have' : ''}>
               <div>
@@ -115,17 +138,36 @@ export function RecipeScreen({ id }: { id: string }) {
       )}
 
       <h2>Method</h2>
+      {r.steps.length === 0 && <p class="small">No method yet. <a href={`#/import/${encodeURIComponent(r.id)}`}>Add it</a>.</p>}
       <ol class="steps">{r.steps.map((st) => <li>{st}</li>)}</ol>
+      {imp && (
+        <>
+          {imp.notes && <p class="tip"><strong>Notes:</strong> {imp.notes}</p>}
+          <p class="small">Imported {dayLabel(imp.added).replace('Tonight', 'today')}.</p>
+          {photos.length > 0 && (
+            <>
+              <h2>The original {photos.length === 1 ? 'picture' : 'pictures'}</h2>
+              <div class="thumbs">{photos.map((u) => <button class="thumb" onClick={() => setBigPhoto(u)} aria-label="Show the picture bigger"><img src={u} alt="The picture this recipe was read from" /></button>)}</div>
+            </>
+          )}
+        </>
+      )}
       {r.tip && <p class="tip"><strong>Tip:</strong> {r.tip}</p>}
       {f !== 1 && <p class="small">Amounts are worked out for {serves}. Cooking times stay about the same; a much bigger batch may need a bigger pan or a little longer.</p>}
 
       <div class="bottom-actions">
-        <a class="btn primary big" href={`#/cook/${encodeURIComponent(r.id)}`}>Start cooking</a>
+        {r.steps.length > 0 && <a class="btn primary big" href={`#/cook/${encodeURIComponent(r.id)}`}>Start cooking</a>}
         <button class="btn big" onClick={() => markCooked(r.id, today())}>I cooked this</button>
       </div>
 
+      {bigPhoto && (
+        <Sheet title="Original picture" onClose={() => setBigPhoto(null)}>
+          <img class="big-photo" src={bigPhoto} alt="The picture this recipe was read from" />
+        </Sheet>
+      )}
+
       {swapLine && (
-        <Sheet title={`No ${INGREDIENTS[swapLine.ing].name}?`} onClose={() => setSwapLine(null)}>
+        <Sheet title={`No ${ingredient(swapLine.ing).name}?`} onClose={() => setSwapLine(null)}>
           <p class="small">Instead of {lineText(swapLine)}{swapLine.note ? ` (${swapLine.note})` : ''}:</p>
           <ul class="swaps">
             {swapsFor(swapLine.ing).map((sw) => {

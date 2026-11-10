@@ -6,3 +6,4 @@ playwright-report/
 .DS_Store
 tools/scan-test/.venv/
 __pycache__/
+public/ocr/

@@ -1,7 +1,7 @@
 import { ingredient } from '../data/ingredients';
 import { SWAPS } from '../data/swaps';
 import type { Line, Swap, SwapPart, Unit } from '../types';
-import { convert, family, formatAmount } from './units';
+import { convert, family, formatAmount, fraction } from './units';
 
 const JUICY = new Set(['lemon', 'lime', 'orange']);
 /** Ingredient name as it reads beside its amount: "onions" for 2 pc, "lemon juice" for a spoonful of lemon. */
@@ -14,6 +14,13 @@ export function nameFor(ing: string, qty: number, unit: Unit): string {
 
 /** "400 g beef mince", "2 onions", "salt, to taste". The note is shown apart. */
 export function lineText(line: Line): string {
+  // An imported line keeps its own words after the amount.
+  if (line.label) {
+    if (line.unit === 'taste') return `${line.label[0].toUpperCase()}${line.label.slice(1)}`;
+    // "6 garlic cloves": the unit is already in its words, so only the number goes in front
+    if (family(line.unit) === 'count' && line.unit !== 'pc' && new RegExp(`\\b${line.unit}`, 'i').test(line.label)) return `${fraction(line.qty)} ${line.label}`;
+    return `${formatAmount(line.qty, line.unit)} ${line.label}`.trim();
+  }
   const name = nameFor(line.ing, line.qty, line.unit);
   if (line.unit === 'taste') return `${name[0].toUpperCase()}${name.slice(1)}, to taste`;
   return `${formatAmount(line.qty, line.unit)} ${name}`;

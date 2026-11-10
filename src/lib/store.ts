@@ -1,4 +1,6 @@
 import { INGREDIENTS } from '../data/ingredients';
+import type { ImportedRecipe } from '../types';
+import { syncImported } from './imported';
 
 // Everything the app remembers lives on the phone only (localStorage). A backup is one file the user saves to iCloud.
 // date YYYY-MM-DD, null = "some day"; meat = meat-eaters to cook the meat-on-the-side for (vegetarian dishes that have one)
@@ -20,10 +22,12 @@ export interface State {
   defaultServes: number;
   /** How many at the table eat meat: the meat on the side of a vegetarian dish is cooked for them. */
   meatEaters: number;
+  /** Recipes read from screenshots, photos or pasted text (their pictures are kept apart, in src/lib/photos.ts). */
+  imported: ImportedRecipe[];
 }
 
 const KEY = 'recipes-state-v1';
-export const emptyState = (): State => ({ v: 2, stock: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4, meatEaters: 2 });
+export const emptyState = (): State => ({ v: 2, stock: [], favourites: [], hidden: [], cooked: [], plans: [], shopping: { checked: [] }, serves: {}, defaultServes: 4, meatEaters: 2, imported: [] });
 
 /** Reads a stored or backed-up state, keeping only what it understands. Throws on something that is not ours. */
 export function parseState(text: string): State {
@@ -55,6 +59,21 @@ export function parseState(text: string): State {
     serves: raw.serves && typeof raw.serves === 'object' ? Object.fromEntries(Object.entries(raw.serves).filter(([, n]) => typeof n === 'number' && n > 0)) as Record<string, number> : {},
     defaultServes: typeof raw.defaultServes === 'number' && raw.defaultServes > 0 ? raw.defaultServes : base.defaultServes,
     meatEaters: typeof raw.meatEaters === 'number' && raw.meatEaters >= 0 ? raw.meatEaters : base.meatEaters,
+    imported: Array.isArray(raw.imported) ? raw.imported.map(parseImported).filter((x: ImportedRecipe | null): x is ImportedRecipe => x !== null) : [],
+  };
+}
+
+const strs = (x: unknown) => (Array.isArray(x) ? x.filter((s): s is string => typeof s === 'string' && s.trim() !== '') : []);
+function parseImported(x: any): ImportedRecipe | null {
+  if (!x || typeof x.id !== 'string' || !x.id.startsWith('imp-') || typeof x.title !== 'string' || !x.title.trim()) return null;
+  return {
+    id: x.id, title: x.title.trim().slice(0, 120), serves: typeof x.serves === 'number' && x.serves > 0 ? x.serves : 4,
+    ...(typeof x.minutes === 'number' && x.minutes > 0 ? { minutes: x.minutes } : {}),
+    ...(x.vegetarian === true ? { vegetarian: true } : {}),
+    ingredients: strs(x.ingredients), steps: strs(x.steps),
+    ...(typeof x.notes === 'string' && x.notes.trim() ? { notes: x.notes.trim() } : {}),
+    added: typeof x.added === 'string' ? x.added : today(),
+    ...(typeof x.photos === 'number' && x.photos > 0 ? { photos: x.photos } : {}),
   };
 }
 
@@ -73,17 +92,21 @@ let state: State = load();
 const listeners = new Set<() => void>();
 
 function load(): State {
+  let s: State;
   try {
     const t = globalThis.localStorage?.getItem(KEY);
-    return t ? parseState(t) : emptyState();
+    s = t ? parseState(t) : emptyState();
   } catch {
-    return emptyState();
+    s = emptyState();
   }
+  syncImported(s.imported);
+  return s;
 }
 
 export const getState = () => state;
 export function setState(change: (s: State) => State) {
   state = change(state);
+  syncImported(state.imported); // before anyone redraws, so imported recipes are already in the recipe list
   try { globalThis.localStorage?.setItem(KEY, JSON.stringify(state)); } catch { /* full or blocked: keeps working for this visit */ }
   for (const l of listeners) l();
 }
@@ -132,15 +155,27 @@ export const toggleFavourite = (id: string) => setState((s) => ({ ...s, favourit
 export const toggleHidden = (id: string) => setState((s) => ({ ...s, hidden: toggle(s.hidden, id) }));
 export const setServes = (id: string, n: number) => setState((s) => ({ ...s, serves: { ...s.serves, [id]: Math.max(1, Math.min(24, n)) } }));
 export const setMeatEaters = (n: number) => setState((s) => ({ ...s, meatEaters: Math.max(0, Math.min(12, n)) }));
-export const servesFor = (s: State, id: string) => s.serves[id] ?? s.defaultServes;
+// An imported recipe opens at its own amount ("makes 12"); the app's own recipes at your usual number.
+export const servesFor = (s: State, id: string) => s.serves[id] ?? s.imported.find((x) => x.id === id)?.serves ?? s.defaultServes;
 export const addPlan = (p: Plan) => setState((s) => ({ ...s, plans: [...s.plans.filter((x) => x.id !== p.id), p] }));
 export const removePlan = (id: string) => setState((s) => ({ ...s, plans: s.plans.filter((x) => x.id !== id) }));
 export const markCooked = (id: string, date: string) => setState((s) => ({ ...s, cooked: [...s.cooked, { id, date }], plans: s.plans.filter((x) => x.id !== id) }));
 export const toggleChecked = (key: string) => setState((s) => ({ ...s, shopping: { checked: toggle(s.shopping.checked, key) } }));
 export const clearChecked = () => setState((s) => ({ ...s, shopping: { checked: [] } }));
 
-export const today = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-export const addDays = (iso: string, n: number) => {
+// Function declarations (not consts): the stored state is read while this file is still loading, and it may need today().
+export function today(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+export function addDays(iso: string, n: number) {
   const [y, m, d] = iso.split('-').map(Number);
   return today(new Date(y, m - 1, d + n));
-};
+}
+
+/** Saves a new or changed imported recipe. */
+export const saveImported = (x: ImportedRecipe) =>
+  setState((s) => ({ ...s, imported: s.imported.some((y) => y.id === x.id) ? s.imported.map((y) => (y.id === x.id ? x : y)) : [...s.imported, x] }));
+/** Deletes an imported recipe, and takes it off favourites, the plan and the hidden list (what you cooked stays in the history). */
+export const deleteImported = (id: string) => setState((s) => ({
+  ...s, imported: s.imported.filter((y) => y.id !== id), favourites: s.favourites.filter((f) => f !== id),
+  plans: s.plans.filter((p) => p.id !== id), hidden: s.hidden.filter((h) => h !== id),
+}));
+export const newImportId = () => `imp-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;

@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { AISLE_NAMES } from '../data/ingredients';
-import { RECIPES, recipeById } from '../data/recipes';
+import { LIBRARY_COUNT, recipeById } from '../data/recipes';
+import { allPhotos, restorePhotos } from '../lib/photos';
 import { shoppingList } from '../lib/shopping';
 import { clearChecked, getState, inStock, parseState, removePlan, replaceState, toggleChecked, toggleHidden } from '../lib/store';
 import type { Aisle } from '../types';
@@ -10,7 +11,9 @@ import { dayLabel } from './recipe';
 type Tab = 'plan' | 'shop' | 'fav' | 'cooked' | 'more';
 
 async function saveBackup(): Promise<string> {
-  const text = JSON.stringify(getState(), null, 1);
+  // The pictures of imported recipes go in the same file, so a restore brings them back too.
+  const photos = await allPhotos();
+  const text = JSON.stringify({ ...getState(), ...(Object.keys(photos).length ? { photos } : {}) }, null, 1);
   const name = `recipes-backup-${new Date().toISOString().slice(0, 10)}.json`;
   const file = new File([text], name, { type: 'application/json' });
   const nav = navigator as Navigator & { canShare?: (d: unknown) => boolean };
@@ -39,15 +42,18 @@ export function SavedScreen() {
   const toBuy = list.filter((i) => !i.inFridge);
   const have = list.filter((i) => i.inFridge);
   const aisles = [...new Set(toBuy.map((i) => i.aisle))] as Aisle[];
-  const tabs: [Tab, string][] = [['plan', `Planned (${s.plans.length})`], ['shop', 'Shopping'], ['fav', `Saved (${s.favourites.length})`], ['cooked', 'Cooked'], ['more', 'Backup']];
+  const tabs: [Tab, string][] = [['plan', `Planned (${s.plans.length})`], ['shop', 'Shopping'], ['fav', `Favourites (${s.favourites.length})`], ['cooked', 'Cooked'], ['more', 'Backup']];
 
   const restore = async (input: HTMLInputElement) => {
     const f = input.files?.[0];
     input.value = '';
     if (!f) return;
     try {
-      const st = parseState(await f.text());
-      if (!confirm(`Replace what is on this phone with the backup (${st.favourites.length} saved, ${st.plans.length} planned)?`)) return;
+      const text = await f.text();
+      const st = parseState(text);
+      if (!confirm(`Replace what is on this phone with the backup (${st.favourites.length} favourites, ${st.plans.length} planned, ${st.imported.length} imported)?`)) return;
+      const photos = JSON.parse(text).photos;
+      if (photos && typeof photos === 'object') await restorePhotos(photos);
       replaceState(st);
       setMsg('Backup restored.');
     } catch (e) {
@@ -109,7 +115,7 @@ export function SavedScreen() {
         ))}
 
       {tab === 'fav' && (s.favourites.length === 0
-        ? <Empty>No saved recipes yet. Press "☆ Save" on any recipe you like.</Empty>
+        ? <Empty>No favourites yet. Tap the ☆ beside any recipe, or "☆ Favourite" on its page.</Empty>
         : <div class="cards">{s.favourites.map((id) => recipeById(id)).filter(Boolean).map((r) => <Card r={r!} />)}</div>)}
 
       {tab === 'cooked' && (s.cooked.length === 0
@@ -137,7 +143,7 @@ export function SavedScreen() {
               <li><a href={recipeHref(r!.id)}><strong>{r!.title}</strong></a><button class="btn ghost small" onClick={() => toggleHidden(r!.id)}>Show again</button></li>
             ))}
           </ul>
-          <p class="small">Version {__BUILD_DATE__}. {RECIPES.length} recipes, written for this app.</p>
+          <p class="small">Version {__BUILD_DATE__}. {LIBRARY_COUNT} recipes written for this app{s.imported.length ? `, ${s.imported.length} imported` : ''}.</p>
         </div>
       )}
     </div>

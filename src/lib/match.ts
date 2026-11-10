@@ -1,5 +1,5 @@
 import { FAMILIAR } from '../data/familiar';
-import { INGREDIENTS } from '../data/ingredients';
+import { EXTRA_INGREDIENTS, INGREDIENTS, ingredient } from '../data/ingredients';
 import { RECIPES } from '../data/recipes';
 import type { Familiar, Line, Recipe, Swap } from '../types';
 /** veg = vegetarian dishes only; flex = vegetarian dishes that take meat cooked on the side for the meat-eaters. */
@@ -7,7 +7,7 @@ export type Diet = 'veg' | 'flex';
 const fitsDiet = (r: Recipe, d?: Diet) => !d || (r.tags.includes('vegetarian') && (d === 'veg' || !!r.meatSide));
 import { swapsFor } from './lines';
 
-const isStaple = (ing: string) => INGREDIENTS[ing]?.staple ?? false;
+const isStaple = (ing: string) => (INGREDIENTS[ing] ?? EXTRA_INGREDIENTS[ing])?.staple ?? false;
 /** The lines you actually have to have: not optional, not salt/pepper/oil/water. */
 export const neededLines = (r: Recipe, withMeat = false): Line[] => {
   const seen = new Set<string>();
@@ -116,7 +116,7 @@ export function somethingDifferent(text: string, hidden: Iterable<string> = []):
     let why = '';
     if (familiar && recipe.twistOf.includes(familiar.id)) { score += 10; why = `A change from ${familiar.name.toLowerCase()}`; }
     if (familiar && recipe.cuisine !== familiar.cuisine) score += 1;
-    if (!why && shared.length) why = `Uses ${shared.map((s) => INGREDIENTS[s].name).join(', ')}`;
+    if (!why && shared.length) why = `Uses ${shared.map((s) => ingredient(s).name).join(', ')}`;
     if (score >= (familiar ? 6 : 3)) results.push({ recipe, why, score });
   }
   results.sort((a, b) => b.score - a.score || a.recipe.minutes - b.recipe.minutes);
@@ -136,7 +136,7 @@ export function discover(f: Filters, hidden: Iterable<string> = []): Recipe[] {
     && (!f.effort || (f.effort === 1 ? r.effort === 1 : r.effort === 3))
     && (!f.course || r.course === f.course)
     && fitsDiet(r, dietOf(f))
-    && (!t || norm(`${r.title} ${r.cuisine} ${r.blurb} ${r.lines.map((l) => INGREDIENTS[l.ing].name).join(' ')}`).includes(t)));
+    && (!t || norm(`${r.title} ${r.cuisine} ${r.blurb} ${r.lines.map((l) => l.label ?? ingredient(l.ing).name).join(' ')}`).includes(t)));
 }
 
 export const CUISINES = [...new Set(RECIPES.map((r) => r.cuisine))].sort();

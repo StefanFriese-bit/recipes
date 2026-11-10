@@ -28,7 +28,12 @@ export default defineConfig({
           { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,png,svg,ico,webmanifest}'] },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,webmanifest}'],
+        // The picture reader (~7 MB) is only fetched when a picture is first read, then kept for offline use.
+        globIgnores: ['ocr/**'],
+        runtimeCaching: [{ urlPattern: ({ url }) => url.pathname.includes('/ocr/'), handler: 'CacheFirst', options: { cacheName: 'ocr-reader' } }],
+      },
     }),
   ],
 });

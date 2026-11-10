@@ -1,4 +1,4 @@
-export type Aisle = 'veg' | 'meat' | 'fish' | 'dairy' | 'bakery' | 'pantry' | 'spice' | 'world' | 'frozen';
+export type Aisle = 'veg' | 'meat' | 'fish' | 'dairy' | 'bakery' | 'pantry' | 'spice' | 'world' | 'frozen' | 'other';
 
 export interface Ingredient {
   id: string;
@@ -10,7 +10,7 @@ export interface Ingredient {
 }
 
 export type Unit =
-  | 'g' | 'kg' | 'ml' | 'l' | 'tsp' | 'tbsp'
+  | 'g' | 'kg' | 'ml' | 'l' | 'tsp' | 'tbsp' | 'cup'
   | 'pc' | 'clove' | 'tin' | 'bunch' | 'handful' | 'pinch' | 'slice' | 'sprig' | 'sheet' | 'stalk' | 'cm' | 'taste';
 
 export interface Line {
@@ -19,6 +19,8 @@ export interface Line {
   unit: Unit;
   note?: string;
   optional?: boolean;
+  /** Imported recipes: the line's own words after the amount ("red onions, finely chopped"), shown instead of the ingredient name. */
+  label?: string;
 }
 
 export type Effort = 1 | 2 | 3; // 1 easy, 2 a bit of work, 3 weekend project
@@ -67,4 +69,21 @@ export interface Familiar {
   aliases: string[];
   cuisine: string;
   key: string[];
+}
+
+/** A recipe read from a screenshot, a photo or pasted text. Kept in its own words; turned into a Recipe on load. */
+export interface ImportedRecipe {
+  id: string; // "imp-…"
+  title: string;
+  serves: number;
+  minutes?: number;
+  vegetarian?: boolean;
+  /** One ingredient per line, as written ("2 large red onions, chopped"). */
+  ingredients: string[];
+  steps: string[];
+  notes?: string;
+  /** YYYY-MM-DD */
+  added: string;
+  /** How many pictures are kept with it on the phone. */
+  photos?: number;
 }

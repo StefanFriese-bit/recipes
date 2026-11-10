@@ -160,3 +160,43 @@ input[type=search], input[type=date], select {
 .stock .box { flex: 0 0 26px; height: 26px; border: 2px solid var(--good); border-radius: 8px; display: grid; place-items: center; color: var(--good); font-weight: 700; background: var(--good-soft); }
 .stock li.out .stock-name { color: var(--muted); }
 .stock li.out .box { border-color: var(--line); background: transparent; }
+
+/* favourite star beside a recipe in any list */
+.card-wrap { position: relative; min-width: 0; }
+.card-wrap .card { padding-right: 56px; }
+.card-wrap .fav-star { position: absolute; top: 4px; right: 4px; }
+.fav-star { flex: none; width: 48px; min-height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: var(--muted); touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; border-radius: 12px; }
+.fav-star svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.fav-star.on { color: var(--accent); }
+.fav-star.on svg { fill: currentColor; }
+.fav-star:active { background: var(--soft); }
+.fold-head .fav-star { border-left: 1px solid var(--line); border-radius: 0; }
+
+/* importing a recipe */
+input[type=text], input[type=number], textarea {
+  width: 100%; box-sizing: border-box; font: inherit; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); min-height: 48px;
+}
+textarea { line-height: 1.4; resize: vertical; }
+.wide-top { width: 100%; margin: 12px 0 4px; box-sizing: border-box; }
+.import-choose { display: grid; gap: 4px; margin-top: 12px; }
+.import-choose .btn.big { width: 100%; }
+.import .btn.file { margin-top: 0; }
+.msg.warn { background: var(--soft); color: var(--warn); }
+.reading { text-align: center; padding: 40px 0; }
+.spinner { width: 40px; height: 40px; margin: 0 auto 12px; border: 4px solid var(--soft); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.thumbs { display: flex; gap: 8px; overflow-x: auto; margin: 8px 0; padding-bottom: 4px; }
+.thumbs img { height: 120px; width: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+.thumb { padding: 0; border: 0; background: none; cursor: pointer; flex: none; }
+.big-photo { width: 100%; height: auto; border-radius: 10px; }
+.understood, .raw { margin: 8px 0 4px; font-size: .9rem; }
+.understood summary, .raw summary { color: var(--accent); font-weight: 600; min-height: 40px; display: flex; align-items: center; cursor: pointer; }
+.understood ul { list-style: none; padding: 0; margin: 4px 0; }
+.understood li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+.raw pre { white-space: pre-wrap; word-break: break-word; font: .85rem/1.4 ui-monospace, Menlo, monospace; background: var(--soft); padding: 10px; border-radius: 10px; max-height: 50vh; overflow: auto; }
+.import .bottom-actions { flex-direction: column; }
+.import .bottom-actions .btn { width: 100%; }
+/* on the folded Cook rows the star and arrow share the right edge: keep both narrow so "cuisine · time · effort" still fits */
+.fold-head .fav-star { width: 42px; }
+.fold-head .fold-arrow { width: 42px; }
+.fold-main { padding-right: 2px; }

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'preact/hooks';
-import { INGREDIENTS } from '../data/ingredients';
+import { ingredient } from '../data/ingredients';
 import { lineText, swapText } from '../lib/lines';
 import { CUISINES, dietOf, freeRein, fridgeMatches, surprise, type Diet, type FridgeMatch, type Filters } from '../lib/match';
 import { inStock } from '../lib/store';
-import { EFFORT, Empty, go, minutes, recipeHref, useStore } from '../ui';
+import { Empty, FavStar, go, metaText, recipeHref, useStore } from '../ui';
 
 type Mode = 'stock' | 'free';
 const keep = (k: string, v?: string) => { try { if (v === undefined) return sessionStorage.getItem(k) ?? ''; sessionStorage.setItem(k, v); } catch { /* private mode */ } return v ?? ''; };
@@ -25,21 +25,20 @@ function DietChips({ diet, set }: { diet?: Diet; set: (d?: Diet) => void }) {
 }
 
 function MatchCard({ m }: { m: FridgeMatch }) {
-  const s = useStore();
   const [open, setOpen] = useState(false);
   const r = m.recipe;
   const buy = m.missing.length;
-  const fav = s.favourites.includes(r.id);
   return (
     <div class={`fold ${open ? 'open' : ''}`}>
       <div class="fold-head">
         <a class="fold-main" href={recipeHref(r.id)}>
-          <strong>{r.title}{fav && <span class="star" aria-label="Saved"> ★</span>}</strong>
+          <strong>{r.title}</strong>
           <span class="fold-sub">
-            <span class="fold-meta">{r.cuisine} · {minutes(r.minutes)} · {EFFORT[r.effort]}{r.tags.includes('vegetarian') ? ' · Veg' : ''}</span>
+            <span class="fold-meta">{metaText(r)}</span>
             <span class={`badge ${buy === 0 ? 'none' : ''}`}>{buy === 0 ? 'All in stock' : `${buy} to buy`}</span>
           </span>
         </a>
+        <FavStar r={r} />
         <button class="fold-arrow" aria-expanded={open} aria-label={`${open ? 'Hide' : 'Show'} details of ${r.title}`} onClick={() => setOpen(!open)}>
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>
@@ -47,9 +46,9 @@ function MatchCard({ m }: { m: FridgeMatch }) {
       {open && (
         <div class="fold-body">
           <p class="blurb">{r.blurb}</p>
-          {m.used.length > 0 && <p class="uses">Uses your {m.used.map((u) => INGREDIENTS[u].name).join(', ')}</p>}
-          {buy > 0 && <p class="missing">Buy: {m.missing.map((l) => INGREDIENTS[l.ing].name).join(', ')}</p>}
-          {m.covered.map((c) => <p class="swapline">No {INGREDIENTS[c.line.ing].name}? Use {swapText(c.line, c.swap)} (for {lineText(c.line)})</p>)}
+          {m.used.length > 0 && <p class="uses">Uses your {m.used.map((u) => ingredient(u).name).join(', ')}</p>}
+          {buy > 0 && <p class="missing">Buy: {m.missing.map((l) => ingredient(l.ing).name).join(', ')}</p>}
+          {m.covered.map((c) => <p class="swapline">No {ingredient(c.line.ing).name}? Use {swapText(c.line, c.swap)} (for {lineText(c.line)})</p>)}
           {r.meatSide && <p class="meatline">Meat on the side: {r.meatSide.name.toLowerCase()}, in its own pan</p>}
           <a class="btn primary wide" href={recipeHref(r.id)}>Open the recipe</a>
         </div>

@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import type { Recipe } from './types';
-import { getState, subscribe, type State } from './lib/store';
+import { getState, subscribe, toggleFavourite, type State } from './lib/store';
 
 export function useStore(): State {
   const [s, set] = useState(getState());
@@ -10,13 +10,16 @@ export function useStore(): State {
 }
 
 // ---- routing (hash) -------------------------------------------------------------------------------------------------
-export type Route = { name: 'stock' | 'find' | 'free' | 'different' | 'saved' } | { name: 'recipe'; id: string } | { name: 'cook'; id: string };
+export type Route = { name: 'stock' | 'find' | 'free' | 'different' | 'saved' | 'imports' | 'import-new' } | { name: 'recipe'; id: string } | { name: 'cook'; id: string } | { name: 'import-edit'; id: string };
 export function parseRoute(hash: string): Route {
   const [, a, b] = hash.replace(/^#/, '').split('/');
   if (a === 'r' && b) return { name: 'recipe', id: decodeURIComponent(b) };
   if (a === 'cook' && b) return { name: 'cook', id: decodeURIComponent(b) };
   if (a === 'stock' || a === 'fridge') return { name: 'stock' }; // "fridge" = the first version's address
   if (a === 'discover') return { name: 'free' }; // Discover became Find a recipe > Free rein
+  if (a === 'import' && b === 'new') return { name: 'import-new' };
+  if (a === 'import' && b) return { name: 'import-edit', id: decodeURIComponent(b) };
+  if (a === 'imports') return { name: 'imports' };
   if (a === 'different' || a === 'saved' || a === 'find') return { name: a };
   return { name: 'find' };
 }
@@ -48,28 +51,42 @@ export function minutes(m: number): string {
   return r ? `${h} h ${r} min` : `${h} h`;
 }
 
+/** "Italian · 40 min · Easy · Veg"; an imported recipe says so, and shows only what its picture told us. */
+export function metaText(r: Recipe): string {
+  const veg = r.tags.includes('vegetarian') ? ' · Veg' : '';
+  if (r.tags.includes('imported')) return `Your import${r.minutes ? ` · ${minutes(r.minutes)}` : ''}${veg}`;
+  return `${r.cuisine} · ${minutes(r.minutes)} · ${EFFORT[r.effort]}${veg}`;
+}
 export function Meta({ r }: { r: Recipe }) {
+  return <span class="meta">{metaText(r)}</span>;
+}
+
+/** The star on a recipe in any list: one tap puts it on (or takes it off) your favourites, without opening it. */
+export function FavStar({ r }: { r: Recipe }) {
+  const s = useStore();
+  const fav = s.favourites.includes(r.id);
   return (
-    <span class="meta">
-      {r.cuisine} · {minutes(r.minutes)} · {EFFORT[r.effort]}{r.tags.includes('vegetarian') ? ' · Veg' : ''}
-    </span>
+    <button class={`fav-star ${fav ? 'on' : ''}`} aria-pressed={fav} aria-label={fav ? `Take ${r.title} off favourites` : `Add ${r.title} to favourites`}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavourite(r.id); }}>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 17.3 6.2 21l1.6-6.6L3 9.8l6.7-.6L12 3l2.3 6.2 6.7.6-4.8 4.6 1.6 6.6z" /></svg>
+    </button>
   );
 }
 
 export function Card({ r, children, badge }: { r: Recipe; children?: ComponentChildren; badge?: string }) {
-  const s = useStore();
-  const fav = s.favourites.includes(r.id);
   return (
-    <a class="card" href={recipeHref(r.id)}>
-      <div class="card-top">
-        <strong>{r.title}</strong>
-        {fav && <span class="star" aria-label="Saved">★</span>}
-      </div>
-      <Meta r={r} />
-      {badge && <span class="badge">{badge}</span>}
-      <p class="blurb">{r.blurb}</p>
-      {children}
-    </a>
+    <div class="card-wrap">
+      <a class="card" href={recipeHref(r.id)}>
+        <div class="card-top">
+          <strong>{r.title}</strong>
+        </div>
+        <Meta r={r} />
+        {badge && <span class="badge">{badge}</span>}
+        {r.blurb && <p class="blurb">{r.blurb}</p>}
+        {children}
+      </a>
+      <FavStar r={r} />
+    </div>
   );
 }
 
